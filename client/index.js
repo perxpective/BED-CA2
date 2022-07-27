@@ -66,6 +66,10 @@ app.get("/booking", (req, res) => {
     res.sendFile("./public/booking.html", { root: __dirname })
 })
 
+app.get("/browseFlights", (req, res) => {
+    res.sendFile("./public/flights.html", { root: __dirname })
+})
+
 app.get('*', function(req, res){
   res.sendFile("./public/404.html", { root: __dirname });
 });

@@ -193,7 +193,7 @@
         <div class="container" id="flight-table">
             <h1>Flights List &#9992;</h1>
             <hr>
-            <div class="table-responsive">
+            <div class="table-responsive mb-3">
                 <table class="table table-light table-striped table-borderless">
                     <thead>
                         <tr>
@@ -371,15 +371,15 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-new-promotion">
+                Add New Promotion
+            </button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-promotion-modal">
+                Delete A Promotion
+            </button>
         </div>
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-new-promotion">
-            Add New Promotion
-        </button>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-promotion-modal">
-            Delete A Promotion
-        </button>
 
         <!-- Modal -->
         <div class="modal fade" id="add-new-promotion" tabindex="-1" aria-labelledby="add-new-promotion" aria-hidden="true"
@@ -881,27 +881,30 @@
                 .then((response) => {
                     const flightList = response.data
                     if (flightList.length > 0) {
-                        flightList.forEach((flight) => {
+                        flightList.forEach((flight, index) => {
                             optionsHTML = `
                             <option value=${flight.flightid}>${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</option>
                             `
                             $("#promotion-flight").append(optionsHTML)
                             $("#flight-options").append(optionsHTML)
                             
-                        })
-
-                    // Axios GET method to get promotion options
-                    axios.get(`${baseURL}/promotion`)
-                        .then((response) => {
-                            const promotionList = response.data
-                            if (promotionList.length > 0) {
-                                promotionList.forEach((promotion, index) => {
-                                    optionsHTML = `
-                                    <option value="${promotion.promotionid}">Promotion for ${flightList[index].flightCode} (${flightList[index].originAirportIata} - ${flightList[index].destinationAirportIata})</option>
-                                    `
-                                    $("#promotion-options").append(optionsHTML)
+                            // Axios GET method to get promotion options
+                            axios.get(`${baseURL}/promotion`)
+                                .then((response) => {
+                                    const promotionList = response.data
+                                    if (promotionList.length > 0) {
+                                        promotionList.forEach((promotion, index) => {
+                                            optionsHTML = `
+                                            <option value="${promotion.promotionid}">Promotion for ${promotion.flight} (${flight.originAirportIata} - ${flight.destinationAirportIata})<br>${promotion.startDate} to ${promotion.endDate}<br>${promotion.discount}% off!</option>
+                                            `
+                                            $("#promotion-options").append(optionsHTML)
+                                        })
+                                    }
                                 })
-                            }
+    
+                                .catch((error) => {
+                                    console.log(error)
+                                })
                         })
                     }
                 })

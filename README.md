@@ -3,27 +3,93 @@
 Back-End Web Development (BED) CA2 Assignment
 Developed a full-stack flight booking website
 
+
 ## Setup Instructions
 - Open the zip and open the extracted folder in Visual Studio Code
 -	Open the db_init.sql file, paste it on the query and run it on the Workbench by clicking on the lightning icon
   - If you cannot open the file, open the SQL file in a text editor and copy and paste the contents on the query
 -	On the databaseConfig.js file located in the model folder, change the password to your own password that you usually use in the Workbench
--	On the terminal, run “nodemon" or "node server.js" if the first command does not work and you do not have nodemon installed
--	Test all of the endpoints on POSTMAN based on the documentations below
 -	Install all the required node packages using “npm install”
 -	Refer to README.md for more details about the code
+-	First Method:
+  - Right click the respective "client" and "server" folders and click on the 'Open in Integrated Terminal' option for each of the folders
+  - Run nodemon on each of the terminals
+  - If nodemon does not work, run the command node index.js and node server.js for the client terminal and server terminal respectively
+- Second Method:
+  - Create two new terminals on your VSCode workstation
+  - Run two commands: cd server and cd client for each terminal
+  - Run nodemon on both terminals
+  - If nodemon does not work, run the command node index.js and node server.js for the client terminal and server terminal respectively
 
-## Packages Installed
+## NPM Packages Installed
 - Body Parser
 - Express
 - Multer
 - MySQL
 - Nodemon
 
+## Scripts and Stylesheets Linked
+- Boostrap
+- Popper.js
+- Axios
+- jQuery
+- Vanta.js
+- FontAwesome
+
 Refer to the package.json file to view all the dependencies
 
 ### Project Directory
-
+```
+.
+├── client/
+│   ├── node_modules/
+│   ├── public/
+│   │   ├── css/
+│   │   │   ├── admin.css
+│   │   │   ├── global.css
+│   │   │   ├── index.css
+│   │   │   ├── login.css
+│   │   │   ├── profile.css
+│   │   │   ├── searchflights.css
+│   │   │   └── signup.css
+│   │   ├── images/
+│   │   ├── 404.html
+│   │   ├── admin.html
+│   │   ├── booking.html
+│   │   ├── cart.html
+│   │   ├── flightdetails.html
+│   │   ├── flights.html
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── profile.html
+│   │   ├── searchflights.html
+│   │   ├── signup.html
+│   │   └── transfers.html
+│   ├── index.js
+│   ├── package-lock.json
+│   └── package.json
+├── server/
+│   ├── auth/
+│   │   └── verifyToken.js
+│   ├── controller/
+│   │   └── app.js
+│   ├── model/
+│   │   ├── airport.js
+│   │   ├── booking.js
+│   │   ├── cart.js
+│   │   ├── databaseConfig.js
+│   │   ├── flight.js
+│   │   ├── promotion.js
+│   │   └── user.js
+│   ├── node_modules/
+│   ├── uploads/
+│   ├── config.js
+│   ├── db_init.sql
+│   ├── package-lock.json
+│   ├── package.json
+│   └── server.js
+└── README.md
+```
 
 ## SQL Tables Created
 Database name: sp_air
@@ -90,6 +156,8 @@ Database name: sp_air
 - transfers.html
 
 ## Updates to Basic Requirement Fufillment (Additional Endpoints)
+Added the following additional endpoints to enable maximum functionality of the website:
+- 
 
 ## Bonus Features Fufillment
 - Uploading of actual image for aircraft seats when creating new flights
@@ -100,7 +168,7 @@ Database name: sp_air
 ## Basic Requirements Needed
 <u>Basic Functionality</u>
 - Persistent login *
-- Search by origin airport, destination airport, departure date
+- Search by origin airport, destination airport, departure date and return date *
 - View flight details
 - View profile information *
 - Add new flights (Admins) *
@@ -109,9 +177,9 @@ Database name: sp_air
 <u>Pages</u>
 - Login Page *
 - Home page *
-  - Search form for users to search flights
-  - Dropdown list of airports for searching flights
-- Search results page
+  - Search form for users to search flights *
+  - Dropdown list of airports for searching flights *
+- Search results page *
   - Contain matching results for search fields from search page
   - Brief information
 - Profile page *
@@ -121,8 +189,8 @@ Database name: sp_air
 
 <u>Bonus Requirements</u>
 - Add images of flight aircraft seats when creating new flight *
+- Shopping cart system (local storage) *
 - Add and search promotions for flights 
-- Shopping cart system (local storage)
 - Search option for transfer airport for non-direct flights (flights with transfer)
 
 <u>Additional Features</u>

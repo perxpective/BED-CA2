@@ -1,0 +1,31 @@
+body {
+    background: linear-gradient(rgb(201, 255, 255), rgb(87, 188, 255));
+    padding-top: 100px;
+    background-repeat: no-repeat;
+    background-size:100% 100%;
+    margin: 0px;
+    min-height: 100%;
+    width: 100%;
+}
+
+div#profile-card {
+    width: 80%;
+    transform: scale(1.2)
+}
+
+div#user-info > div {
+    padding: 10px 0px;
+}
+
+button {
+    margin: 5px;
+}
+
+img#profile-pic, img#upload-photo {
+    object-fit: cover;
+}
+
+section {
+    background-color: linear-gradient(rgb(201, 255, 255), rgb(87, 188, 255));
+}
+

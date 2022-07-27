@@ -1,0 +1,12 @@
+div#index-div1 {
+    padding-top: 150px;
+}
+
+div#index-div2 {
+    margin: 50px 100px;
+    padding: 40px;
+}
+
+html {
+    overflow-y: hidden;
+}

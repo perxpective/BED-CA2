@@ -1,0 +1,27 @@
+/* Login Button Styles */
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+}
+
+
+/* Container Styles */
+.container {
+    vertical-align: middle;
+}
+
+/* Image Styles */
+img#logo {
+    padding-top: 3rem;
+    width: 15%;
+    align-items: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Login Card Styles */
+div#login-card {
+    background-color: rgba(255, 255, 255, 0.5);
+}

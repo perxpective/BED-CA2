@@ -285,10 +285,20 @@
                             }
                         })
                             .then((response2) => {
-                                axios.delete(`${baseURL}/cart/${cartItem.flightid}/${loggedInUserID}`)
-                                alert(`Your flight has been successfully booked! Thank you for choosing SP AIR as your travelling companion.`)
-                                window.localStorage.removeItem("cartid")
-                                window.location.assign("/")
+                                axios.delete(`${baseURL}/cart/${cartItem.flightid}/${loggedInUserID}`, {
+                                    headers: {
+                                        "Authorization": "Bearer " + token
+                                    }
+                                })
+                                    .then((response) => {
+                                        alert(`Your flight has been successfully booked! Thank you for choosing SP AIR as your travelling companion.`)
+                                        window.localStorage.removeItem("cartid")
+                                        window.location.assign("/")
+                                    })
+
+                                    .catch((error) => {
+                                        console.log(error)
+                                    })
                             })
 
                             .catch((error) => {

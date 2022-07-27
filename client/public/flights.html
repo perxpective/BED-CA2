@@ -93,19 +93,280 @@
 
         <!-- Search Box for Flight -->
         <section>
-            <div class="container py-5" style="margin-top:100px;">
-                <div class="card mb-3 slide-in-top" id="search-card" style="border-radius: .5rem;">
-                    <div class="card-body p-lg-5 p-xs-0 fade-in">
-                        <h1 class="card-title">Find Flights</h1>
-                        <p>List of all flights SP AIR has to offer!</p>
-            
-                        <form id="search-flight-form" class="needs-validation" novalidate>
-                            <input type="text" class="form-control w-50" id="flight-code" placeholder="Type a flight code to narrow down your results!">
-                        </form>
+            <div class="row">
+                <div class="col-xl-5">                    
+                    <div class="container py-0" style="margin-top:130px;">
+                        <div class="card mb-3 w-100 center slide-in-top" id="search-card" style="border-radius: .5rem;">
+                            <div class="card-body p-lg-5 p-xs-0 fade-in">
+                                <img class="img-fluid img-repsonsive m-2" src="./images/travel.png" width=100px;>
+                                <h1 class="card-title">Find Flights</h1>
+                                <p class="m-0">List of all flights SP AIR has to offer!</p>
+                                <form id="search-flight-form">
+                                    <div class="row py-1">
+                                        <div class="col-12 p-3">
+                                            <label class="form-label" for="flight-code">Search a flight by flight code:</label>
+                                            <input type="text" class="form-control w-100" id="flight-code">
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="m-0">Sort by Price</p>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="sort" id="price1" value="sortPriceByAsc">
+                                                <label class="form-check-label" for="price1">
+                                                    Cheapest to Expensive
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="sort" id="price2" value="sortPriceByDesc">
+                                                <label class="form-check-label" for="price2">
+                                                    Expensive to Cheapest
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="m-0">Sort by Flight Code</p>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="sort" id="flight-code-1" value="sortFlightCodeByAsc">
+                                                <label class="form-check-label" for="flight-code-1">
+                                                    A-Z 0-9
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="sort" id="flight-code-2" value="sortFlightCodeByDesc">
+                                                <label class="form-check-label" for="flight-code-2">
+                                                    Z-A 9-0
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Apply Sort</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-7">
+                    <!-- Search Results -->
+                    <div id="search-results" style="margin-top:130px;">
                     </div>
                 </div>
             </div>
         </section>
 
+
+        <!-- JS Script to obtain flight search results -->
+        <script>
+            // Base URL for backend server
+            const baseURL = "http://localhost:8081"
+            const token = window.localStorage.getItem("token")
+
+            // Function to redirect user to flight page with flightid local storage
+            function flightRedirect(flightid) {
+                    window.localStorage.setItem("redirect_flightid", flightid)
+            }
+
+            // Datetime Manipulation Functions
+            function dateToString(dateList) {
+                monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                var year = dateList[0]
+                var month = parseInt(dateList[1])
+                var day = parseInt(dateList[2])
+                var dateString = `${day} ${monthList[month - 1]} ${year}`
+                return dateString
+            }
+
+            $(document).ready(() => {
+                // Axios GET method to get all flights from flight database
+                axios.get(`${baseURL}/flight`)
+                    .then((response) => {
+                        const flightList = response.data
+                        if (flightList.length > 0) {
+                            flightList.forEach((flight, index) => {
+                                var travelTimeList = flight.travelTime.split(":")
+                                // Get duration string
+                                var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
+                                // Flight embark date
+                                var date = flight.embarkDate.split(" ")[0]
+                                // Flight embark time
+                                var time = flight.embarkDate.split(" ")[1]
+                                // Convert them into lists
+                                var dateList = date.split("-")
+                                var timeList = time.split(":")
+                                // Convert datelist into date string for embark date
+                                var date = dateToString(dateList)
+                                // Get start flight time (excluding seconds)
+                                var startTime = timeList.slice(0, -1).join(":")
+                                // Get end flight local time
+                                var hoursPassed = parseInt(travelTimeList[0])
+                                var minutesPassed = parseInt(travelTimeList[1])
+                                var endHour = parseInt(timeList[0]) + hoursPassed
+
+                                if (endHour > 23) {
+                                    endHour -= 24
+                                }
+                                var endMinute = parseInt(timeList[1]) + minutesPassed
+                                if (endMinute >= 60) {
+                                    endHour += 1
+                                    endMinute -= 60
+                                } if (endMinute < 10) {
+                                    endMinute = "0" + endMinute
+                                } if (endHour < 10) {
+                                    endHour = "0" + endHour
+                                }
+                                var endTime = [endHour, endMinute].join(":")
+                                const flightHTML = `
+                                <div class="container p-0" id="flight-search-results-${index + 1}">
+                                    <div class="container slide-in-right pr-5">
+                                        <div class="row d-flex justify-content-center align-items-center h-100 p-1">
+                                            <div class="col">
+                                                <div class="card mb-3">
+                                                    <h4 class="card-header">Non-Stop</h4>
+                                                    <div class="row d-flex justify-content-center align-items-center h-100 p-1">
+                                                        <div class="col-md-2">
+                                                            <div class="card-body card-body p-lg-2 p-xs-0">
+                                                                <h3 class="card-title">${flight.flightCode}</h3>
+                                                                <p class="card-text">Departure on ${date}</p>
+                                                            </div>
+                                                        </div>
+    
+                                                        <div class="col-md-7">
+                                                            <table class="w-100 text-center">
+                                                                <tr>
+                                                                    <td><h2>${startTime} ${flight.originAirportIata}</h2></td>
+                                                                    <td><h2>&#9992</h2></td>
+                                                                    <td><h2>${endTime} ${flight.destinationAirportIata}</h2></td>
+                                                                </tr>
+                                                                <tr >
+                                                                    <td><p class="card-subtitle">${flight.originAirport1}</p></td>
+                                                                    <td>${duration}</td>
+                                                                    <td><p class="card-subtitle">${flight.destinationAirport1}</p></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+    
+                                                        <div class="col-md-3 text-center">
+                                                            <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
+                                                            <h3>$${flight.price}</h3>
+                                                            <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `
+                                $("#search-results").append(flightHTML)
+                            })
+                        }
+                    })
+
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+                $("#search-flight-form").submit((event) => {
+                    // Prevent page from loading
+                    event.preventDefault()
+    
+                    const query = $("#flight-code").val()
+                    const sortingMethod = $("input[name='sort']:checked").val()
+
+                    console.log(query)
+                    console.log(sortingMethod)
+                    console.log(`${baseURL}/searchFlights?searchQuery=${query}&sort=${sortingMethod}`)
+                    // Axios GET method to get flights based on queries inputted
+                    axios.get(`${baseURL}/searchFlights?searchQuery=${query}&sort=${sortingMethod}`)
+                        .then((response) => {
+                            $("#search-results").empty()
+                            const flightList = response.data
+                            if (flightList.length > 0) {
+                                flightList.forEach((flight, index) => {
+                                    var travelTimeList = flight.travelTime.split(":")
+                                    // Get duration string
+                                    var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
+                                    // Flight embark date
+                                    var date = flight.embarkDate.split(" ")[0]
+                                    // Flight embark time
+                                    var time = flight.embarkDate.split(" ")[1]
+                                    // Convert them into lists
+                                    var dateList = date.split("-")
+                                    var timeList = time.split(":")
+                                    // Convert datelist into date string for embark date
+                                    var date = dateToString(dateList)
+                                    // Get start flight time (excluding seconds)
+                                    var startTime = timeList.slice(0, -1).join(":")
+                                    // Get end flight local time
+                                    var hoursPassed = parseInt(travelTimeList[0])
+                                    var minutesPassed = parseInt(travelTimeList[1])
+                                    var endHour = parseInt(timeList[0]) + hoursPassed
+    
+                                    if (endHour > 23) {
+                                        endHour -= 24
+                                    }
+                                    var endMinute = parseInt(timeList[1]) + minutesPassed
+                                    if (endMinute >= 60) {
+                                        endHour += 1
+                                        endMinute -= 60
+                                    } if (endMinute < 10) {
+                                        endMinute = "0" + endMinute
+                                    } if (endHour < 10) {
+                                        endHour = "0" + endHour
+                                    }
+                                    var endTime = [endHour, endMinute].join(":")
+                                    const flightHTML = `
+                                    <div class="container p-0" id="flight-search-results-${index + 1}">
+                                        <div class="container slide-in-right pr-5">
+                                            <div class="row d-flex justify-content-center align-items-center h-100 p-1">
+                                                <div class="col">
+                                                    <div class="card mb-3">
+                                                        <h4 class="card-header">Non-Stop</h4>
+                                                        <div class="row d-flex justify-content-center align-items-center h-100 p-1">
+                                                            <div class="col-md-2">
+                                                                <div class="card-body card-body p-lg-2 p-xs-0">
+                                                                    <h3 class="card-title">${flight.flightCode}</h3>
+                                                                    <p class="card-text">Departure on ${date}</p>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-7">
+                                                                <table class="w-100 text-center">
+                                                                    <tr>
+                                                                        <td><h2>${startTime} ${flight.originAirportIata}</h2></td>
+                                                                        <td><h2>&#9992</h2></td>
+                                                                        <td><h2>${endTime} ${flight.destinationAirportIata}</h2></td>
+                                                                    </tr>
+                                                                    <tr >
+                                                                        <td><p class="card-subtitle">${flight.originAirport1}</p></td>
+                                                                        <td>${duration}</td>
+                                                                        <td><p class="card-subtitle">${flight.destinationAirport1}</p></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+        
+                                                            <div class="col-md-3 text-center">
+                                                                <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
+                                                                <h3>$${flight.price}</h3>
+                                                                <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+                                    $("#search-results").append(flightHTML)
+                                })
+                            }
+                        })
+    
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                })
+            })
+
+
+        </script>
     </body>
 </html>

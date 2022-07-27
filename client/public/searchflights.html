@@ -423,9 +423,6 @@
 
         <!-- Append options -->
         <script>
-            // Get token from local storage
-            const token = localStorage.getItem("token")
-
             // Axios GET method to get airports
             axios.get(`${baseURL}/airport`)
                 .then((response) => {

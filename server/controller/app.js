@@ -514,20 +514,6 @@ app.delete('/promotion/:promotionid', verifyToken, (req, res) => {
     }
 })
 
-app.get("/searchAirline", (req, res) => {
-    // Get query string from request parameters
-    searchQuery = "%" + req.query.query + "%"
-
-    // Initiate function to search airline by airline code (keyword from user)
-    flight.searchFlightByAirline(searchQuery, (err, result) => {
-        if (!err) {
-            res.status(201).send(result)
-        } else {
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
-})
-
 /*
 -----------------------------------------------------------------------
 NEW APIs
@@ -771,6 +757,35 @@ app.delete("/cart", verifyToken, (req, res) => {
 app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
     var cartid = req.params.cartid
     cart.getCartItemById(cartid, (err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
+// Endpoint to get all flights sorted
+app.get("/searchFlights", (req, res) => {
+    var searchQuery = req.query.flightquery
+
+    if (searchQuery === undefined) {
+        searchQuery = "%%"
+    } else {
+        searchQuery = "%" + searchQuery + "%"
+    }
+
+    var sortMethod = req.query.sort
+
+    if (sortMethod === "undefined") {
+        sortMethod = ""
+    }
+
+    console.log(searchQuery)
+    console.log(sortMethod)
+    flight.searchFlights(searchQuery, sortMethod, (err, result) => {
         if (!err) {
             console.log(result)
             res.status(200).send(result)

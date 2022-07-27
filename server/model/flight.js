@@ -12,6 +12,7 @@ BED Assignment CA2
 IMPORT DATABASE CONFIGURATIONS
 -----------------------------------------------------------------------
 */
+const e = require('express')
 var db = require('./databaseConfig.js')
 
 /*
@@ -153,16 +154,40 @@ var flightDB = {
         }) 
     },
 
-    // Function to search flights by airline code search query 
-    searchFlightByAirline: (searchQuery, callback) => {
+    // Function to search flights by airline code search query and sort according to form values
+    searchFlights: (searchQuery, sort, callback) => {
         var connection = db.getConnection()
-        connection.connect((err) => {
+        connection.connect((err) => {            
             if (err) {
                 console.log(err)
                 return callback(err, null)
             } else {
+                var orderBy = ""
+                var sortingTable = ""
+                var order = ""
+                if (sort !== "") {
+                    orderBy = "order by"
+                    if (sort === "sortPriceByAsc") {
+                        sortingTable = "price"
+                        order = "asc"
+                    } else if (sort === "sortPriceByDesc") {
+                        sortingTable = "price"
+                        order = "desc"
+                    } else if (sort === "sortFlightCodeByAsc") {
+                        sortingTable = "flightCode"
+                        order = "asc"
+                    } else if (sort === "sortFlightCodeByDesc") {
+                        sortingTable = "flightCode"
+                        order = "desc"
+                    }
+                }
+                console.log(orderBy)
+                console.log(sortingTable)
+                console.log(order)
+
                 // SQL statement to select flight by airline code based on the search query
-                var sql = "select flightid, flightCode, aircraft, (select name from airport where airportid = flight.originAirport) as originAirport, (select name from airport where airportid = flight.destinationAirport) as destinationAirport, embarkDate, travelTime, price, flight_pic_url from sp_air.flight where flightCode like ?"
+                var sql = `select flightid, flightCode, aircraft, (select name from airport where airportid = flight.originAirport) as originAirport1, (select iata from airport where airportid = flight.originAirport) as originAirportIata, flight.originAirport as originAirportId, (select name from airport where airportid = flight.destinationAirport) as destinationAirport1, (select iata from airport where airportid = flight.destinationAirport) as destinationAirportIata, flight.destinationAirport as destinationAirportId, embarkDate, travelTime, price, flight_pic_url from flight where flightCode like ? ${orderBy} ${sortingTable} ${order}`
+
                 connection.query(sql, [searchQuery], (err, result) => {
                     connection.end()
                     if (err) {

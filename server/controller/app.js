@@ -754,6 +754,7 @@ app.delete("/cart", verifyToken, (req, res) => {
 
 // Endpoint to get cart item by cartid
 app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
+    // Get cartid parameters
     var cartid = req.params.cartid
     cart.getCartItemById(cartid, (err, result) => {
         if (!err) {

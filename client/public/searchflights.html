@@ -61,7 +61,6 @@
         <!-- Vanta.js Animated Background Div -->
         <div id="vanta"></div>
 
-
         <!-- Navigation Bar -->
         <nav class="navbar navbar-expand-md navbar-light fixed-top" aria-label="SP AIR Navigation Bar">
             <div class="container-fluid">
@@ -185,7 +184,6 @@
 
         <!--  Search Flights form submission -->
         <script>
-
             // Datetime Manipulation Functions
             function dateToString(dateList) {
                 monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -419,10 +417,7 @@
                     alert("Please input the required options!")           
                 }
             })
-        </script>
-
-        <!-- Append options -->
-        <script>
+            
             // Axios GET method to get airports
             axios.get(`${baseURL}/airport`)
                 .then((response) => {

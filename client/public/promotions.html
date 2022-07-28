@@ -3,8 +3,8 @@
     -   Name: Lee Quan Jun Ervin
     -   Admin No: 2104005
     -   Class: DISM/FT/2B/21
-    -   Filename: client/public/index.html
-    -   Description: Main homepage of SP AIR
+    -   Filename: client/public/promotions.html
+    -   Description: Promotion page of SP AIR
 -->
 
 <!DOCTYPE html>
@@ -20,21 +20,18 @@
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <!-- Link with Popper.js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" 
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
         <!-- Link with Bootstrap 5.0 -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"    
-            rel="stylesheet"
-            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-            crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
         <!-- Link with Axios library-->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <!-- Link CSS file styles -->
-        <link rel="stylesheet" href="./css/index.css">
-        <link rel="stylesheet" href="./css/global.css">
+        <link rel="stylesheet" type="text/css" href="./css/global.css">
         <!-- Link with Google Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,13 +49,13 @@
                     el: "#vanta",
                     mouseControls: true,
                     touchControls: true,
-                    gyroControls: true,
+                    gyroControls: false,
                     minHeight: 200.00,
                     minWidth: 200.00
                 })
             })
         </script>
-        <title>Home | SP AIR</title>
+        <title>Promotions | SP AIR</title>
     </head>
     <body>
         <!-- Vanta.js Animated Background Div -->
@@ -94,36 +91,65 @@
             </div>
         </nav>
 
-        <!-- SP AIR Introduction Hero -->
-        <div class="px-4 text-center" id="index-div1">
-            <img class="d-block mx-auto mb-4 slide-in-elliptic-top-fwd" src="./images/SP AIR LOGO.png" alt="" width="150" style="padding-top:50px;">
-            <h1 class="display-5 fw-bold tracking-in-contract-bck">Welcome to SP AIR!</h1>
-            <div class="col-lg-6 mx-auto fade-in">
-                <p class="lead mb-4 fade-in">Your gateway to the world before you!</p>
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <a href="/searchflights"><button type="button" class="btn btn-primary btn-lg px-4 gap-3 fade-in">Get to your Dream Destination Now!<i class="fa-solid fa-arrow-right" style="padding-left: 15px; padding-right: 0px;"></i></button></a>
-                </div>
+        <!-- Section to display promotions -->
+        <section class="px-xs-0" style="padding-top:130px;">
+            <div class="p-5" style="background-color: rgba(255, 255, 255, 0.435);">
+                <h1 class="p-3 fw-bold" style="font-size:3rem;"><span class="m-3"><img src="./images/promotion.png" width=70px></span>Promotions Available</h1>
+                <hr>
             </div>
-        </div>
-
-        <!-- Jumbotrons -->
-        <div class="container py-5">
-            <div class="row align-items-md-stretch">
-                <div class="col-md-6 slide-in-left">
-                    <div class="h-100 p-5 text-white bg-secondary rounded-3">
-                        <h2>View our vast global network!</h2>
-                        <p>We have an endless number of connections around the world. Click here to find connecting flights to your destination!</p>
-                        <a href="/transferFlights" class="btn btn-outline-light" type="button">View Connections<i class="fa-solid fa-plane-departure style="padding-left: 15px; padding-right: 0px;"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-6 animation slide-in-right">
-                    <div class="h-100 p-5 bg-light border rounded-3">
-                        <strong><h2>See the endless possbilities!</h2></strong>
-                        <p>Check out all the flights that SP AIR has to offer to you! You are one click away from the endless boundaries of the globe!</p>
-                        <a href="/browseFlights" class="btn btn-outline-secondary" type="button">View all Flights <i class="fa-solid fa-plane-departure" style="padding-left: 15px; padding-right: 0px;"></i></a>
-                    </div>
-                </div>
-            </div> 
-        </div>
+            <div id="promotion" class="p-5">
+            </div>
+        </section>
     </body>
+
+    <!-- jQuery and Axios Scripts-->
+    <script>
+        // Datetime Manipulation Functions
+        function dateToString(dateList) {
+            monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            var year = dateList[0]
+            var month = parseInt(dateList[1])
+            var day = parseInt(dateList[2])
+            var dateString = `${day} ${monthList[month - 1]} ${year}`
+            return dateString
+        }
+
+        // Base URL for backend server
+        const baseURL = "http://localhost:8081"
+
+        // Axios GET method to get flights
+        axios.get(`${baseURL}/flight`)
+            .then((response) => {
+                const flightList = response.data
+                flightList.forEach((flight) => {
+                    const flightid = flight.flightid
+                    
+                    // Axios GET method to get promotions by flightid
+                    axios.get(`${baseURL}/flightPromotions/${flightid}`)
+                        .then((response2) => {
+                            const promotionList = response2.data
+                            promotionList.forEach((promotion) => {
+                                const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
+                                const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
+
+                                promotionHTML = `
+                                <div class="col-4">
+                                    <div class="card mb-4 rounded-3 shadow-sm w-100 center">
+                                        <div class="card-header pt-3">
+                                            <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
+                                                <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
+                                        </div>
+                                    </div>
+                                </div>
+                                `
+
+                                $("#promotion").append(promotionHTML)
+                            })
+                        })
+                })
+            })
+    </script>
 </html>

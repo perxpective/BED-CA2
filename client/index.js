@@ -70,9 +70,14 @@ app.get("/browseFlights", (req, res) => {
     res.sendFile("./public/flights.html", { root: __dirname })
 })
 
-app.get('*', function(req, res){
+app.get("/promotions", (req, res) => {
+    res.sendFile("./public/promotions.html", { root: __dirname })
+})
+
+app.get("*", (req, res) => {
   res.sendFile("./public/404.html", { root: __dirname });
 });
+
 
 const PORT = 3000
 app.listen(PORT, () => {

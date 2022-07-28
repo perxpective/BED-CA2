@@ -1,4 +1,4 @@
-# BED Assignment 1
+# BED Assignment 2
 
 Back-End Web Development (BED) CA2 Assignment
 Developed a full-stack flight booking website

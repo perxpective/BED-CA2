@@ -57,7 +57,7 @@ var promotionDB = {
                 return callback(err, null)
             } else {
                 // SQL command to select all promotion from promotion table
-                var sql = "select promotionid, flightid, (select flightCode from flight where flight.flightid = promotion.flightid) as flight, startDate, endDate, discount from sp_air.promotion"
+                var sql = "select promotionid, flightid, (select flightCode from flight where flight.flightid = promotion.flightid) as flight, startDate, endDate, discount from sp_air.promotion where startDate <= select(curdate()) <= endDate"
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, (err, result) => {
                     connection.end()
@@ -84,7 +84,7 @@ var promotionDB = {
                 return callback(err, null)
             } else {
                 // SQL command to select promotion by promotionid
-                var sql = "select * from sp_air.promotion where promotionid = ?"
+                var sql = "select * from sp_air.promotion where promotionid = ? and startDate <= (select curdate()) <= endDate"
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, [promotionid], (err, result) => {
                     connection.end()
@@ -138,7 +138,7 @@ var promotionDB = {
                 return callback(err, null)
             } else {
                 // SQL command to select promotion by flightid
-                var sql = "select * from sp_air.promotion where flightid = ?"
+                var sql = "select * from sp_air.promotion where flightid = ? and startDate <= (select curdate()) <= endDate"
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, [flightid], (err, result) => {
                     connection.end()

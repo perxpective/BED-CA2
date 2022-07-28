@@ -769,8 +769,7 @@ app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
 
 // Endpoint to get all flights sorted
 app.get("/searchFlights", (req, res) => {
-    var searchQuery = req.query.flightquery
-
+    var searchQuery = req.query.searchQuery
     if (searchQuery === undefined) {
         searchQuery = "%%"
     } else {
@@ -785,6 +784,7 @@ app.get("/searchFlights", (req, res) => {
 
     console.log(searchQuery)
     console.log(sortMethod)
+    
     flight.searchFlights(searchQuery, sortMethod, (err, result) => {
         if (!err) {
             console.log(result)

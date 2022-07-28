@@ -181,6 +181,7 @@ var flightDB = {
                         order = "desc"
                     }
                 }
+                console.log(searchQuery)
                 console.log(orderBy)
                 console.log(sortingTable)
                 console.log(order)

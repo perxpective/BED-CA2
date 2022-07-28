@@ -102,6 +102,7 @@
                                 <h1 class="card-title">Search Flight Connections</h1>
                             </li>
                         </ul>
+                        <p class="text-muted">Tip! Leave the transfer input blank to get all possible transfer flights!</p>
 
                         <form id="transfer-flight-query" class="needs-validation" novalidate>
                             <div class="row">
@@ -115,7 +116,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="transfer-airport" class="form-label">
-                                        <h5>Transfer Airport<i class="fa-solid fa-plane"></i></i></h5>
+                                        <h5>Transfer Airport<i class="fa-solid fa-plane"></i></h5>
                                     </label>
                                     <select class="form-select form-select-lg mb-3" id="airport-options-2">
                                         <option selected value="">...</option>
@@ -139,11 +140,33 @@
             </div>
         </section>
 
+        <!-- Transfer flight search results -->
+        <div id="search-results">
+        </div>
+
         <!-- Function to redirect user to flight page with flightid local storage -->
         <script>
             function flightRedirect(flightid) {
                 window.localStorage.setItem("redirect_flightid", flightid)
             }
+        </script>
+
+        <!-- Form Validation -->
+        <script>
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
         </script>
 
         <!-- Axios and jQuery Scripts -->
@@ -157,7 +180,7 @@
                 var year = dateList[0]
                 var month = parseInt(dateList[1])
                 var day = parseInt(dateList[2])
-                var dateString = `${day} ${monthList[month - 1]} ${year}`
+                var dateString = `${day} ${monthList[month-1]} ${year}`
                 return dateString
             }
 
@@ -168,8 +191,8 @@
                     if (airportList.length > 0) {
                         airportList.forEach((airport) => {
                             optionsHTML = `
-                        <option value=${airport.airportid}>${airport.name}</option>
-                        `
+                            <option value=${airport.airportid}>${airport.name}</option>
+                            `
                             $("#airport-options-1").append(optionsHTML)
                             $("#airport-options-2").append(optionsHTML)
                             $("#airport-options-3").append(optionsHTML)
@@ -184,8 +207,106 @@
 
         <!-- Transfer Flight Form Submission -->
         <script>
-            
+            $("#transfer-flight-query").submit((event) => {
+                // Clear search results everytime form is submitted
+                $("#search-results").empty()
+
+                // Prevent page from loading
+                event.preventDefault()
+                const originAirport = $("#airport-options-1").val()
+                const transferAirport = $("#airport-options-2").val()
+                const destinationAirport = $("#airport-options-3").val()
+
+                // Check if transfer airport input is blank or not
+                if (transferAirport === "") {
+                    if (originAirport === destinationAirport) {
+                        alert("Origin and Destination Flights cannot be the same!")
+                    } else {
+                        axios.get(`${baseURL}/transfer/flight/${originAirport}/${destinationAirport}`)
+                        .then((response) => {
+                            const flightList = response.data
+                            flightList.forEach((flight, index) => {
+                                var firstTime = flight.firstTravelTime.split(":")
+                                var secondTime = flight.secondTravelTime.split(":")
+                                var duration1 = `${firstTime[0]} hours ${firstTime[1]} mins`
+                                var duration2 = `${secondTime[0]} hours ${secondTime[1]} mins`
+
+                                const firstDate = dateToString(flight.firstEmbarkDate.split(" ")[0].split("-"))
+                                const secondDate = dateToString(flight.secondEmbarkDate.split(" ")[0].split("-"))
+
+                                searchResultHTML = `
+                                <div class="container py-1" id="flight-search-results-${index+1}">
+                                    <div class="container py-3 slide-in-right">
+                                        <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                            <div class="col">
+                                                <div class="card mb-3">
+                                                    <h4 class="card-header">Non-Stop</h4>
+                                                    <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                                        <div class="col-md-2">
+                                                            <div class="card-body card-body p-lg-2 p-xs-0">
+                                                                <h2 class="card-title">${flight.flightCode1}</h2>
+                                                                <h2 class="card-title">${flight.flightCode2}</h2>
+                                                            </div>
+                                                        </div>
+    
+                                                        <div class="col-md-7 table-responsive">
+                                                            <table class="w-100 text-center">
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Departs in ${firstDate}</td>
+                                                                    <td></td>
+                                                                    <td>Departs in ${secondDate}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <h2>${flight.originAirportIata}</h2>
+                                                                        <p class="card-subtitle">${flight.originAirport}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h2>&#9992</h2>
+                                                                        <p>${duration1}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h2>${flight.transferAirportIata}</h2>
+                                                                        <p class="card-subtitle">${flight.transferAirport}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h2>&#9992</h2>
+                                                                        <p>${duration2}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <h2>${flight.destinationAirportIata}</h2>
+                                                                        <p class="card-subtitle">${flight.destinationAirport}</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+    
+                                                        <div class="col-md-3 text-center">
+                                                            <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
+                                                            <h5>Total Price</h5>
+                                                            <h3>$${flight.totalPrice}</h3>
+                                                            <a href="/flightdetails" class="btn btn-primary m-2" onclick="flightRedirect(${flight.firstFlightId})">Book ${flight.flightCode1}</a>
+                                                            <a href="/flightdetails" class="btn btn-primary m-2" onclick="flightRedirect(${flight.secondFlightId})">Book ${flight.flightCode2}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `
+                                $("#search-results").append(searchResultHTML)
+                            })
+
+                        })
+                    }
+                } else {
+                    
+                }
+            })
         </script>
+
 
     </body>
 </html>

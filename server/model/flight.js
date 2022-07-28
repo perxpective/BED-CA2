@@ -101,7 +101,7 @@ var flightDB = {
     },
 
     // Function to get all transfer flights from transfer database
-    getTransfers: (originAirportId, destinationAirportId, embarkDate, callback) => {
+    getTransfers: (originAirportId, destinationAirportId, callback) => {
         var connection = db.getConnection()
         connection.connect((err) => {
             if (err) {
@@ -110,13 +110,17 @@ var flightDB = {
             } else {
                 // SQL statement to create two temporary tables and join the flight information together if destination airport of first flight matches the origin airport of the second flight
                 var sql = `
-                create temporary table if not exists first_flight (flightid int not null, flightCode varchar(45) not null, aircraft varchar(45) not null, originAirport varchar(45) not null, destinationAirport varchar(45) not null, embarkDate datetime not null, price float not null);
-                insert into first_flight select flightid, flightCode, aircraft, originAirport, destinationAirport, embarkDate, price from flight where flight.originAirport = ? and flight.destinationAirport != ?;
-                create temporary table if not exists second_flight (flightid int not null, flightCode varchar(45) not null, aircraft varchar(45) not null, originAirport varchar(45) not null, destinationAirport varchar(45) not null, embarkDate datetime not null, price float not null);
-                insert into second_flight select flightid, flightCode, aircraft, originAirport, destinationAirport, embarkDate, price from flight where flight.destinationAirport = ? and flight.originAirport != ?;
-                select first_flight.flightid as firstFlightId, second_flight.flightid as secondFlightId, first_flight.flightCode as flightCode1, second_flight.flightCode as flightCode2, first_flight.aircraft as aircraft1, second_flight.aircraft as aircraft2, (select name from airport where airportid = first_flight.originAirport) as originAirport, (select iata from airport where airportid = first_flight.originAirport) as originAirportIata, (select name from airport where airportid = second_flight.originAirport) as transferAirport, (select iata from airport where airportid = second_flight.originAirport) as transferAirportIata, (select iata from airport where airportid = second_flight.destinationAirport) as destinationAirportIata, (select name from airport where airportid = second_flight.destinationAirport) as destinationAirport, first_flight.embarkDate as firstEmbarkDate, second_flight.embarkDate as secondEmbarkDate, sum(first_flight.price + second_flight.price) as totalPrice from first_flight, second_flight where first_flight.destinationAirport = second_flight.originAirport and first_flight.embarkDate like ? and first_flight.embarkDate < second_flight.embarkDate;
+                create temporary table if not exists first_flight (flightid int not null, flightCode varchar(45) not null, aircraft varchar(45) not null, originAirport varchar(45) not null, destinationAirport varchar(45) not null, embarkDate datetime not null, travelTime varchar(45) not null, price float not null);
+
+                insert into first_flight select flightid, flightCode, aircraft, originAirport, destinationAirport, embarkDate, travelTime, price from flight where flight.originAirport = ? and flight.destinationAirport != ?;
+
+                create temporary table if not exists second_flight (flightid int not null, flightCode varchar(45) not null, aircraft varchar(45) not null, originAirport varchar(45) not null, destinationAirport varchar(45) not null, embarkDate datetime not null, travelTime varchar(45) not null, price float not null);
+
+                insert into second_flight select flightid, flightCode, aircraft, originAirport, destinationAirport, embarkDate, travelTime, price from flight where flight.destinationAirport = ? and flight.originAirport != ?;
+
+                select first_flight.flightid as firstFlightId, second_flight.flightid as secondFlightId, first_flight.flightCode as flightCode1, second_flight.flightCode as flightCode2, first_flight.aircraft as aircraft1, second_flight.aircraft as aircraft2, (select name from airport where airportid = first_flight.originAirport) as originAirport, (select iata from airport where airportid = first_flight.originAirport) as originAirportIata, (select name from airport where airportid = second_flight.originAirport) as transferAirport, (select iata from airport where airportid = second_flight.originAirport) as transferAirportIata, (select iata from airport where airportid = second_flight.destinationAirport) as destinationAirportIata, (select name from airport where airportid = second_flight.destinationAirport) as destinationAirport, first_flight.embarkDate as firstEmbarkDate, second_flight.embarkDate as secondEmbarkDate, first_flight.travelTime as firstTravelTime, second_flight.travelTime as secondTravelTime, sum(first_flight.price + second_flight.price) as totalPrice from first_flight, second_flight where first_flight.destinationAirport = second_flight.originAirport and first_flight.embarkDate < second_flight.embarkDate;
                 `
-                connection.query(sql, [originAirportId, destinationAirportId, destinationAirportId, originAirportId, embarkDate], (err, result) => {
+                connection.query(sql, [originAirportId, destinationAirportId, destinationAirportId, originAirportId], (err, result) => {
                     connection.end()
                     if (err) {
                         console.log(err)
@@ -129,29 +133,9 @@ var flightDB = {
         })
     },
 
-    // Function to get flight price by flightid
-    getFlightPriceById: (flightid, callback) => {
-        var connection = db.getConnection()
-        connection.connect((err) => {
-            if (err) {
-                console.log(err)
-                return callback(err, null)
-            } else {
-                // SQL statement to select price of the flight by flightid
-                var sql = "select price from flight where flightid = ?"
-                connection.query(sql, [flightid], (err, result) => {
-                    connection.end()
-                    if (err) {
-                        console.log(err)
-                        return callback(err, null)
-                    } else {
-                        console.log(result)
-                        console.table(result)
-                        return callback(null, result)
-                    }
-                })
-            }
-        }) 
+    // Function to find transfer flights with transfer flight specified
+    getTransfersByTransferAirport: (originAirport, transferAirport, destinationAirport) => {
+
     },
 
     // Function to search flights by airline code search query and sort according to form values

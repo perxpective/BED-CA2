@@ -406,10 +406,9 @@ app.get("/transfer/flight/:originAirportId/:destinationAirportId", (req, res) =>
     // Get originAirportId and destinationAirportId from request parameters
     var originAirportId = req.params.originAirportId
     var destinationAirportId = req.params.destinationAirportId
-    var embarkDate = "%" + req.query.embarkDate + "%"
     
     // Function to get transfers
-    flight.getTransfers(originAirportId, destinationAirportId, embarkDate, (err, result) => {
+    flight.getTransfers(originAirportId, destinationAirportId, (err, result) => {
         if (err) {
             res.status(500).send({ "Error Message": "[500] Unknown Error" })
         } else if ((result[result.length-1])[0].firstFlightId == null) {
@@ -795,6 +794,8 @@ app.get("/searchFlights", (req, res) => {
         }
     })
 })
+
+// Endpoint to search transfer flights with transfer airport specified
 
 /*
 -----------------------------------------------------------------------

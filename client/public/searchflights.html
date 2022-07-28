@@ -196,6 +196,7 @@
 
             const baseURL = "http://localhost:8081"
 
+            // Flight Query Submission
             $("#flight-query").submit((event) => {
                 // Clear search results div every submission
                 $("#search-results").empty()
@@ -431,6 +432,10 @@
                             $("#airport-options-2").append(optionsHTML)
                         })
                     }
+                })
+
+                .catch((error) => {
+                    console.log(error)
                 })
         </script>
     </body>

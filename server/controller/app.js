@@ -409,12 +409,14 @@ app.get("/transfer/flight/:originAirportId/:destinationAirportId", (req, res) =>
     
     // Function to get transfers
     flight.getTransfers(originAirportId, destinationAirportId, (err, result) => {
+        console.log(result[result.length-1])
         if (err) {
             res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        } else if ((result[result.length-1])[0].firstFlightId == null) {
+        } else if (result[result.length-1].length === 0) {
             res.status(500).send({ "Error Message": "No transfer flights available from your search query!" })
         } else {
-            console.table(result[result.length - 1])
+            console.log(result)
+            console.table(result[result.length-1])
             res.status(200).send(result[result.length-1])
         }
     })
@@ -786,6 +788,24 @@ app.get("/searchFlights", (req, res) => {
     console.log(sortMethod)
     
     flight.searchFlights(searchQuery, sortMethod, (err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
+// Endpoint to get transfer flight by origin, transfer and destination airport
+app.get("/searchTransfer/flight/:originAirportId/:transferAirportId/:destinationAirportId", (req, res) => {
+    var originAirportId = req.params.originAirportId
+    var transferAirportId = req.params.transferAirportId
+    var destinationAirportId = req.params.destinationAirportId
+
+    // Perform function to search transfer flights with transfer airport specified by user
+    flight.getTransfersWithTransferAirport(originAirportId, transferAirportId, destinationAirportId, (err, result) => {
         if (!err) {
             console.log(result)
             res.status(200).send(result)

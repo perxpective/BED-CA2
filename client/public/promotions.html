@@ -96,8 +96,15 @@
             <div class="p-5" style="background-color: rgba(255, 255, 255, 0.435);">
                 <h1 class="p-3 fw-bold" style="font-size:3rem;"><span class="m-3"><img src="./images/promotion.png" width=70px></span>Promotions Available</h1>
                 <hr>
+                <form id="search-promotions">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Find Promotions!" id="promotion-query">
+                        <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                </form>
             </div>
-            <div id="promotion" class="p-5">
+
+            <div id="promotion" class=" row p-5">
             </div>
         </section>
     </body>
@@ -117,39 +124,95 @@
         // Base URL for backend server
         const baseURL = "http://localhost:8081"
 
-        // Axios GET method to get flights
-        axios.get(`${baseURL}/flight`)
-            .then((response) => {
-                const flightList = response.data
-                flightList.forEach((flight) => {
-                    const flightid = flight.flightid
-                    
-                    // Axios GET method to get promotions by flightid
-                    axios.get(`${baseURL}/flightPromotions/${flightid}`)
-                        .then((response2) => {
-                            const promotionList = response2.data
-                            promotionList.forEach((promotion) => {
-                                const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
-                                const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
-
-                                promotionHTML = `
-                                <div class="col-4 flip-in-hor-bottom">
-                                    <div class="card mb-4 rounded-3 shadow-sm w-100 center">
-                                        <div class="card-header pt-3">
-                                            <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
+        $(document).ready(() => {
+            // Axios GET method to get flights
+            axios.get(`${baseURL}/flight`)
+                .then((response) => {
+                    const flightList = response.data
+                    flightList.forEach((flight) => {
+                        const flightid = flight.flightid
+                        // Axios GET method to get promotions by flightid
+                        axios.get(`${baseURL}/flightPromotions/${flightid}`)
+                            .then((response2) => {
+                                const promotionList = response2.data
+                                promotionList.forEach((promotion) => {
+                                    const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
+                                    const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
+    
+                                    const promotionHTML = `
+                                    <div class="col-4 flip-in-hor-bottom">
+                                        <div class="card mb-4 rounded-3 shadow-sm w-100 center">
+                                            <div class="card-header pt-3">
+                                                <img width="70px" src="./images/discount.png" class="img-fluid">
+                                                <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
+                                                    <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
                                             </div>
-                                            <div class="card-body">
-                                                <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
-                                                <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
                                         </div>
                                     </div>
-                                </div>
-                                `
-
-                                $("#promotion").append(promotionHTML)
+                                    `
+                                    $("#promotion").append(promotionHTML)
+                                })
                             })
-                        })
+                    })
                 })
+    
+                .catch((error) => {
+                    console.log(error)
+                })
+            
             })
+
+            // Get search query from form submission
+            $("#search-promotions").submit((event) => {
+                // Prevent page from loading
+                event.preventDefault()
+                // Clear search results
+                $("#promotion").empty()
+                // Get search query
+                const query = $("#promotion-query").val()
+
+                // Axios GET method to get search promotion results
+                axios.get(`${baseURL}/promotions/search?query=${query}`)
+                    .then((response) => {
+                        const promotionList = response.data
+                        promotionList.forEach((promotion, index) => {
+                            const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
+                            const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
+                            // Axios GET method to get flight details by flightid
+                            axios.get(`${baseURL}/flight/${promotion.flightid}`)
+                                .then((response2) => {
+                                    const flightList = response2.data
+                                    flightList.forEach((flight) => {
+                                        const promotionHTML = `
+                                        <div class="col-4 flip-in-hor-bottom">
+                                            <div class="card mb-4 rounded-3 shadow-sm w-100 center">
+                                                <div class="card-header pt-3">
+                                                    <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
+                                                        <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `
+                                        $("#promotion").append(promotionHTML)
+                                    })
+                                })
+
+                                .catch((error) => {
+                                    console.log(error)
+                                })
+                        })
+                    })
+
+                    .catch((error) => {
+                        console.log(error)
+                    })
+        })
+
     </script>
 </html>

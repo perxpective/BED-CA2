@@ -153,6 +153,33 @@ var promotionDB = {
                 })
             }
         })
+    },
+
+    // Function to search promotions
+    searchPromotions: (query, callback) => {
+        var connection = db.getConnection()
+        connection.connect((err) => {
+            // Check for errors
+            if (err) {
+                console.log(err)
+                return callback(err, null)
+            } else {
+                // SQL command to search promotion based on query
+                var sql = `select promotionid, flightid, (select flightCode from flight where flight.flightid = promotion.flightid) as flight, startDate, endDate, discount from promotion where (select flightCode from sp_air.flight where sp_air.flight.flightid = promotion.flightid) like ? and startDate <= (select curdate()) <= endDate;`
+                console.log(`RUNNING COMMAND: ${sql}`)
+                connection.query(sql, [query], (err, result) => {
+                    connection.end()
+                    if (err) {
+                        console.log(err)
+                        return callback(err, null)
+                    } else {
+                        console.log(result)
+                        console.table(result)
+                        return callback(null, result)
+                    }
+                })
+            }
+        })
     }
 }
 

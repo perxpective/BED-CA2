@@ -816,6 +816,20 @@ app.get("/searchTransfer/flight/:originAirportId/:transferAirportId/:destination
     })
 })
 
+// Endpoint to search promotions by query
+app.get("/promotions/search", (req, res) => {
+    var query = "%" + req.query.query + "%"
+    promotion.searchPromotions(query, (err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
 // Endpoint to search transfer flights with transfer airport specified
 
 /*

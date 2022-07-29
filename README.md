@@ -146,18 +146,22 @@ Database name: sp_air
 - flight.flightid = promotion.flightid
 
 ## Pages Created
-- login.html
-- signup.html
-- index.html
-- profile.html
+- 404.html
 - admin.html
+- booking.html
+- cart.html
 - flightdetails.html
-- searchflights.html
+- flights.html
+- index.html
+- login.html
+- profile.html
+- promotions.html
+- searchfights.html
+- signup.html
 - transfers.html
 
 ## Updates to Basic Requirement Fufillment (Additional Endpoints)
 Added the following additional endpoints to enable maximum functionality of the website:
-- 
 
 ## Bonus Features Fufillment
 - Uploading of actual image for aircraft seats when creating new flights

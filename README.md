@@ -138,6 +138,14 @@ Database name: sp_air
   - endDate
   - discount
 
+- cart - stores flights user adds to the cart for bookout
+  - cartid
+  - userid
+  - flightid
+  - cost
+  - quantity
+  - discount
+
 ## Foreign Keys
 - airport.airportid = flight.originAirport and flight.destinationAirport
 - flight.flightid = booking.flightid
@@ -163,40 +171,34 @@ Database name: sp_air
 ## Updates to Basic Requirement Fufillment (Additional Endpoints)
 Added the following additional endpoints to enable maximum functionality of the website:
 
+## Basic Requirements Fufillment
+- Persistent login (Storing of JWT Token and User ID on Local Storage)
+- Page with search form for users to search flights by origin and destination locations and departure and return dates
+- Search results from search form inputs
+  - Basic information about flight provided in the results along with the returning flight
+- Flight details page with full flight information with flight code, aircraft, departure airport and destination airport, travel time and price
+- Profile page displaying user information like username, email and role
+- Admin Panel
+  - Add New Flight option with airport options from database
+  - Add New Airport option 
+    - Alert message shown if duplicate entry detected
+
 ## Bonus Features Fufillment
 - Uploading of actual image for aircraft seats when creating new flights
 - Add and search for promotions for flights
-- Shopping cart functionality to book flights and confirm payment details and check out data saved to database
+- Shopping cart functionality to book flights and confirm payment details and check out data saved to database using local storage
 - Search including option for transfer airport for non-direct flights
 
-## Basic Requirements Needed
-<u>Basic Functionality</u>
-- Persistent login *
-- Search by origin airport, destination airport, departure date and return date *
-- View flight details
-- View profile information *
-- Add new flights (Admins) *
-- Add new airports (Admins) *
-
-<u>Pages</u>
-- Login Page *
-- Home page *
-  - Search form for users to search flights *
-  - Dropdown list of airports for searching flights *
-- Search results page *
-  - Contain matching results for search fields from search page
-  - Brief information
-- Profile page *
-- Add New Flight page *
-- Add New Airport page *
-- Add New Promotion page *
-
-<u>Bonus Requirements</u>
-- Add images of flight aircraft seats when creating new flight *
-- Shopping cart system (local storage) *
-- Add and search promotions for flights 
-- Search option for transfer airport for non-direct flights (flights with transfer)
-
-<u>Additional Features</u>
-- Delete airports, flights and promotions *
-- Price range search *
+## Additional/Advanced Features:
+- Added additional column for airport table called IATA code to display short forms of airports on the flights
+- Minimum and maximum price range search option in flight search
+- Page to browse all flights and sort and filter flights (by price or flight code alphabetical order)
+- Sign Up for new users to create a new account to login to the booking app
+- Ability to book flights and add them to the booking history table using existing booking endpoints
+- Option to search for all possible flight connections (i.e. possible transfer flights) when only origin and destination airport indicated
+- Error page displayed when status code 404 occurs
+- Option to clear cart or delete cart item in cart page
+- Add and delete promotions, airports and flights on the admin panel
+- Option for user to edit their user information and change their profile picture (with new profile picture preview)
+- Users can choose quantity and seat class for their selected flight and add them to the cart
+- Admins can review booking history in a table in the admin panel and can delete the table when needed

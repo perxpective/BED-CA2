@@ -56,7 +56,7 @@
                 })
             })
         </script>
-        <title>Flight Details | SP AIR</title>
+        <title>Cart | SP AIR</title>
     </head>
     <body>
         <!-- Vanta.js Animated Background Div -->
@@ -180,7 +180,7 @@
                 function deleteCartItem(flightid) {
                     let confirmAction = confirm("Are you sure you want to delete this flight?")
                     if (confirmAction) {
-                        axios.delete(`${baseURL}/cart/${flightid}`, {
+                        axios.delete(`${baseURL}/cart/${flightid}/${loggedInUserID}`, {
                             headers: {
                                 "Authorization": "Bearer " + token
                             }

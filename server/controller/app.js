@@ -381,13 +381,13 @@ app.post("/booking/:userid/:flightid", verifyToken, (req, res) => {
 })
 
 // Endpoint #10: Using the DELETE method to delete flights and associated bookings by flightid
-app.delete("/flight/:id", verifyToken, (req, res) => {
+app.delete("/flight/:flightid", verifyToken, (req, res) => {
     // Check for admin privileges
     if (req.decodedToken.role !== "Administrator") {
         res.status(401).send({ "Message": "Unauthorized!" })
     } else {
         // Get flightid from request parameters
-        var flightid = req.params.id
+        var flightid = req.params.flightid
     
         // Function to delete a flight from the flight database
         flight.deleteFlight(flightid, (err, result) => {

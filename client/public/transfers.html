@@ -110,9 +110,12 @@
                                     <label for="origin-airport" class="form-label">
                                         <h5>Origin Airport<i class="fa-solid fa-plane-departure"></i></h5>
                                     </label>
-                                    <select class="form-select form-select-lg mb-3" id="airport-options-1">
+                                    <select class="form-select form-select-lg mb-3" id="airport-options-1" required>
                                         <option selected value="">...</option>
                                     </select>
+                                    <div class="invalid-feedback">
+                                        Please enter an origin airport!
+                                    </div>
                                 </div>
                                 <div class="col">
                                     <label for="transfer-airport" class="form-label">
@@ -126,13 +129,16 @@
                                     <label for="destination-airport" class="form-label">
                                         <h5>Destination Airport<i class="fa-solid fa-plane-arrival"></i></h5>
                                     </label>
-                                    <select class="form-select form-select-lg mb-3" id="airport-options-3">
+                                    <select class="form-select form-select-lg mb-3" id="airport-options-3" required>
                                         <option selected value="">...</option>
                                     </select>
+                                    <div class="invalid-feedback">
+                                        Please enter a destination airport!
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary btn-lg" id="search-button">Find Connections!</button>
+                                <button type="submit" class="btn btn-primary btn-lg m-3" id="search-button">Find Connections!</button>
                             </div>
                         </form>
                     </div>
@@ -301,12 +307,16 @@
                                     </div>
                                     `
                                     $("#search-results").append(searchResultHTML)
+                                    document.getElementById("flight-search-results-1").scrollIntoView({ block: "start" })
                                 })
 
                             })
 
                             .catch((error) => {
                                 console.log(error)
+                                if (error.response.status === 500) {
+                                    alert("No transfer flights for your search available!")
+                                }
                             })
                     }
                 } else {
@@ -392,8 +402,15 @@
                                     </div>
                                     `
                                     $("#search-results").append(searchResultHTML)
+                                    document.getElementById("flight-search-results-1").scrollIntoView({ block: "start" })
                                 })
+                            })
 
+                            .catch((error) => {
+                                console.log(error)
+                                if (error.response.status === 500) {
+                                    alert("No transfer flights for your search available!")
+                                }
                             })
                     }
                 }

@@ -353,18 +353,20 @@
                                                                                 </div>
                             
                                                                                 <div class="col-md-7">
-                                                                                    <table class="w-100 text-center">
-                                                                                        <tr>
-                                                                                            <td><h2>${startTime} ${flight.originAirportIata}</h2></td>
-                                                                                            <td><h2>&#9992</h2></td>
-                                                                                            <td><h2>${endTime} ${flight.destinationAirportIata}</h2></td>
-                                                                                        </tr>
-                                                                                        <tr >
-                                                                                            <td><p class="card-subtitle">${flight.originAirport}</p></td>
-                                                                                            <td>${duration}</td>
-                                                                                            <td><p class="card-subtitle">${flight.destinationAirport}</p></td>
-                                                                                        </tr>
-                                                                                    </table>
+                                                                                    <div class="row">
+                                                                                        <div class="col">
+                                                                                            <h2>${startTime} ${flight.originAirportIata}</h2>
+                                                                                            <p class="card-subtitle">${flight.originAirport}</p>
+                                                                                        </div>
+                                                                                        <div class="col">
+                                                                                            <h2>&#9992</h2>
+                                                                                            ${duration}
+                                                                                        </div>
+                                                                                        <div class="col">
+                                                                                            <h2>${endTime} ${flight.destinationAirportIata}</h2>
+                                                                                            <p class="card-subtitle">${flight.destinationAirport}</p>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                             
                                                                                 <div class="col-md-3 text-center">

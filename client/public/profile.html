@@ -79,17 +79,18 @@
         <section id="profile" class="100vt flip-in-hor-bottom">
             <div class="container" style="padding-top:10rem;">
                 <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div id="profile-card" class="col col-lg-6 mb-0 mb-lg-0">
+                    <div id="profile-card" class="col col-lg-6 mb-0 mb-lg-0 tracking-in-expand">
                         <div class="card mb-3" style="border-radius: .5rem;">
-                            <div class="row g-0 tracking-in-expand">
+                            <div class="row g-0">
                                 <div class="col-md-4 gradient-custom text-center text-black"
                                     style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
                                     <div id="user-profile-pic">
                                     </div>
                                     <div id="username"></div>
                                     <div id="buttons" class="p-4">
-                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-profile">Edit Profile<i class="fa-solid fa-pen-to-square" style="padding-right:5px;"></i></a>
-                                        <button type="button" class="btn btn-primary" id="logout">Logout<i class="fa-solid fa-right-from-bracket" style="padding-right:5px;"></i></button>
+                                        <a type="button" class="btn btn-primary m-1" id="logout">Logout<i class="fa-solid fa-right-from-bracket" style="padding-right:5px;"></i></a>
+                                        <a type="button" class="btn btn-primary m-1" id="view-booking-history" href="bookingHistory.html">View Booking History</a>
+                                        <a class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#edit-profile">Edit Profile<i class="fa-solid fa-pen-to-square" style="padding-right:5px;"></i></a>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -271,7 +272,7 @@
                     // Append the administrative panel button if user role is admin
                     if (user.role === "Administrator") {
                         $("#buttons").append(`
-                        <a class="btn btn-primary" href="/admin">Admin Panel<i class="fa-solid fa-hammer" style="padding-right:5px;"></i></a>
+                        <a class="btn btn-primary m-1" href="/admin">Admin Panel<i class="fa-solid fa-hammer" style="padding-right:5px;"></i></a>
                         `)
                     }
                 })

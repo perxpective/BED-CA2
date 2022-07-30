@@ -830,7 +830,32 @@ app.get("/promotions/search", (req, res) => {
     })
 })
 
-// Endpoint to search transfer flights with transfer airport specified
+// Endpoint to get booking history by userid
+app.get("/booking/:userid", (req, res) => {
+    var userid = req.params.userid
+    booking.getBookingByUserId(userid, (err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
+// Endpoint to get all booking data from booking table
+app.get("/booking", (req, res) => {
+    booking.getAllBooking((err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
 
 /*
 -----------------------------------------------------------------------

@@ -45,6 +45,60 @@ var bookingDB = {
                 }) 
             }
         })
+    },
+    
+    // Function to get all booking
+    getAllBooking: (callback) => {
+        var connection = db.getConnection()
+        connection.connect((err) => {
+            if (err) {
+                console.log(err)
+                return callback(err, null)
+            } else {
+                console.log("Connection established!")
+                // SQL Command to select data into the booking table
+                var sql = "select name, passport, nationality, age, (select flightCode from flight where flight.flightid = booking.flightid) as flight, booked_at from booking"
+                console.log(`RUNNING COMMAND: ${sql}`)
+                connection.query(sql, (err, result) => {
+                    connection.end()
+                    if (err) {
+                        console.log(err)
+                        return callback(err, null)
+                    } else {
+                        console.log(result)
+                        console.table(result)
+                        return callback(null, result)
+                    }
+                }) 
+            }
+        })
+    },
+
+    // Function to get booking by userid
+    getBookingByUserId: (userid, callback) => {
+        var connection = db.getConnection()
+        connection.connect((err) => {
+            if (err) {
+                console.log(err)
+                return callback(err, null)
+            } else {
+                console.log("Connection established!")
+                // SQL Command to select data into the booking table
+                var sql = "select name, passport, nationality, age, (select flightCode from flight where flight.flightid = booking.flightid) as flight, booked_at from booking where userid = ?"
+                console.log(`RUNNING COMMAND: ${sql}`)
+                connection.query(sql, [userid], (err, result) => {
+                    connection.end()
+                    if (err) {
+                        console.log(err)
+                        return callback(err, null)
+                    } else {
+                        console.log(result)
+                        console.table(result)
+                        return callback(null, result)
+                    }
+                }) 
+            }
+        })
     }
 }
 

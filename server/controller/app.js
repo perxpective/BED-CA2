@@ -523,9 +523,10 @@ app.delete('/promotion/:promotionid', verifyToken, (req, res) => {
 
 /*
     Notes:
-    - Removed advanced endpoints (checkout and price range) from CA1 to make way for other advanced features in the full-stack website in CA2
+    - Removed advanced endpoints (checkout and price range) from CA1 to make way for other advanced features included in the full-stack website in CA2
     - Introduced a new model called cart.js in order to implement a cart system for flight bookings
     - Created the related endpoints to the cart model
+    - Seat class bookings and computation of final price all done in the front-end
 */
 
 

@@ -297,7 +297,13 @@ app.post("/flight/", verifyToken, upload.single("flight_pic_url"), (req, res) =>
     }
 })
 
-// Endpoint #8: Using the GET method to retrieve flight information travelling from origin to destination airport
+// [MODIFIED] Endpoint #8: Using the GET method to retrieve flight information travelling from origin to destination airport
+/*
+    Modified the endpoint to run two functions in the endpoint
+    - Runs searchFlightsByPriceRange function if there are queries for min and max price ranges
+    - Acts as filter before running the findFlight function to search the filtered flights by origin and destination airports
+    - If no queries detected, run the findFlight function normally
+*/
 app.get("/flightDirect/:originAirportId/:destinationAirportId/", (req, res) => {
     // Get parameters (originAirportID and destinationAirportId)
     var originAirportId = req.params.originAirportId
@@ -516,6 +522,14 @@ app.delete('/promotion/:promotionid', verifyToken, (req, res) => {
 })
 
 /*
+    Notes:
+    - Removed advanced endpoints (checkout and price range) from CA1 to make way for other advanced features in the full-stack website in CA2
+    - Introduced a new model called cart.js in order to implement a cart system for flight bookings
+    - Created the related endpoints to the cart model
+*/
+
+
+/*
 -----------------------------------------------------------------------
 NEW APIs
 -----------------------------------------------------------------------
@@ -542,7 +556,7 @@ app.post("/login", (req, res) => {
                 userid: result[0].userid, 
                 role: result[0].role 
             }
-            console.log(payload)
+
             // Sign the payload with the secret key with SHA256
             jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" , expiresIn: 86400 }, (err, token) => {
                 if (err) {

@@ -99,6 +99,60 @@ var bookingDB = {
                 }) 
             }
         })
+    },
+
+    // Function to clear entire booking history
+    clearAllBooking: (callback) => {
+        var connection = db.getConnection()
+        connection.connect((err) => {
+            if (err) {
+                console.log(err)
+                return callback(err, null)
+            } else {
+                console.log("Connection established!")
+                // SQL Command to clear booking table
+                var sql = "delete from booking"
+                console.log(`RUNNING COMMAND: ${sql}`)
+                connection.query(sql, (err, result) => {
+                    connection.end()
+                    if (err) {
+                        console.log(err)
+                        return callback(err, null)
+                    } else {
+                        console.log(result)
+                        console.table(result)
+                        return callback(null, result)
+                    }
+                })
+            }
+        })  
+    },
+
+    // Function to clear booking table by userid
+    clearBookingById: (userid, callback) => {
+        var connection = db.getConnection()
+        connection.connect((err) => {
+            if (err) {
+                console.log(err)
+                return callback(err, null)
+            } else {
+                console.log("Connection established!")
+                // SQL Command to clear booking table by userid
+                var sql = "delete from booking where userid = ?"
+                console.log(`RUNNING COMMAND: ${sql}`)
+                connection.query(sql, [userid], (err, result) => {
+                    connection.end()
+                    if (err) {
+                        console.log(err)
+                        return callback(err, null)
+                    } else {
+                        console.log(result)
+                        console.table(result)
+                        return callback(null, result)
+                    }
+                })
+            }
+        })    
     }
 }
 

@@ -123,26 +123,36 @@
             var token = localStorage.getItem("token")
             var loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"))
 
-            axios.get(`${baseURL}/booking/${loggedInUserID}`)
+            axios.get(`${baseURL}/booking/${loggedInUserID}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
                 .then((response) => {
                     const bookingList = response.data
-                    $("#heading").append(`Booking History for ${bookingList[0].name}`)
-                    bookingList.forEach((booking, index) => {
-                        tableRowHTML = `
-                        <tr>
-                            <td>${index+1}</td>
-                            <td>${booking.passport}</td>
-                            <td>${booking.nationality}</td>
-                            <td>${booking.age}</td>
-                            <td>${booking.flight}</td>
-                            <td>${booking.booked_at}</td>
-                        </tr>
-                        `
-                        $("#booking-history-body").append(tableRowHTML)
-                    })
+                    if (bookingList.length > 0) {
+                        $("#heading").append(`Booking History for ${bookingList[0].name}`)
+                        bookingList.forEach((booking, index) => {
+                            tableRowHTML = `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${booking.passport}</td>
+                                <td>${booking.nationality}</td>
+                                <td>${booking.age}</td>
+                                <td>${booking.flight}</td>
+                                <td>${booking.booked_at}</td>
+                            </tr>
+                            `
+                            $("#booking-history-body").append(tableRowHTML)
+                        })
+                    } else {
+                        $("#heading").append("Booking History is empty for now! Book a flight to see your history here!")
+                    }
                 })
 
-
+                .catch((error) => {
+                    console.log(error)
+                })
         </script>
     </body>
 </html>

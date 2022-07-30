@@ -168,7 +168,7 @@ var cartDB = {
                 return callback(err, null)
             } else {
                 console.log("Connection established!")
-                // SQL Command to delete cart item by flightid
+                // SQL Command to clear cart by flightid
                 var sql = "delete from cart;"
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, (err, result) => {

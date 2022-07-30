@@ -845,8 +845,35 @@ app.get("/booking/:userid", (req, res) => {
 })
 
 // Endpoint to get all booking data from booking table
-app.get("/booking", (req, res) => {
+app.get("/booking", verifyToken, (req, res) => {
     booking.getAllBooking((err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
+// Endpoint to clear booking history
+app.delete("/booking", verifyToken, (req, res) => {
+    booking.clearAllBooking((err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            console.log(err)
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
+// Endpoint to clear booking history by userid
+app.delete("/booking/:userid", verifyToken, (req, res) => {
+    var userid = req.params.userid
+    booking.clearBookingById(userid, (err, result) => {
         if (!err) {
             console.log(result)
             res.status(200).send(result)

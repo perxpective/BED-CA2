@@ -380,6 +380,32 @@
             </button>
         </div>
 
+        <!-- Booking Table -->
+        <div class="container pb-5" id="booking-table">
+            <h1>Booking History &#9992;</h1>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-light table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Passport</th>
+                            <th scope="col">Nationality</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Flight</th>
+                            <th scope="col">Booked At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booking-table-body">
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-danger" onclick="clearBooking()">
+                    Clear Booking History
+                </button>
+            </div>
+        </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="add-new-promotion" tabindex="-1" aria-labelledby="add-new-promotion" aria-hidden="true"
@@ -472,6 +498,27 @@
         <script>
             function flightRedirect(flightid) {
                 window.localStorage.setItem("redirect_flightid", flightid)
+            }
+        </script>
+
+        <!-- Function to clear booking history -->
+        <script>
+            function clearBooking() {
+                let confirmAction = confirm("Are you sure you want to clear booking history?")
+                if (confirmAction) {
+                    axios.delete(`${baseURL}/booking`, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    })
+                        .then((response) => {
+                            window.location.reload()
+                        })
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                }
             }
         </script>
 
@@ -738,7 +785,7 @@
 
         <!-- Append Table Contents -->
         <script>
-            // GET user information
+            // Axios GET method to get user information
             axios.get(`${baseURL}/users/`, {
                 headers: {
                     "Authorization": "Bearer " + token
@@ -767,7 +814,7 @@
                     console.log(error.response.data)
                 })
 
-            // GET airport information
+            // Axios GET method to get airport information
             axios.get(`${baseURL}/airport/`, {
                 headers: {
                     "Authorization": "Bearer " + token
@@ -795,7 +842,7 @@
                     console.log(error.response.data)
                 })
 
-            // GET flight information
+            // Axios GET method to get flight information
             axios.get(`${baseURL}/flight`)
                 .then((response) => {
                     // Get all flight information
@@ -831,7 +878,7 @@
                     console.log(error.response.data)
                 })
 
-            // GET promotion information
+            // Axios GET method to get promotion information
             axios.get(`${baseURL}/promotion`)
                 .then((response) =>{
                     // Get all promotion information
@@ -850,6 +897,40 @@
                             $("#promotion-table-body").append(tableRow)
                         })
                     }
+                })
+
+                .catch((error) => {
+                    console.log(error)
+                })
+            
+            // Axios GET method to get booking history
+            axios.get(`${baseURL}/booking`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+                .then((response) => {
+                    const bookingList = response.data
+                    if (bookingList.length > 0) {
+                        bookingList.forEach((booking, index) => {
+                            const tableRow = `
+                            <tr>
+                                <th>${index + 1}</th>
+                                <th>${booking.name}</th>
+                                <th>${booking.passport}</th>
+                                <th>${booking.nationality}</th>
+                                <th>${booking.age}</th>
+                                <th>${booking.flight}</th>
+                                <th>${booking.booked_at}</th>
+                            </tr>
+                            `
+                            $("#booking-table-body").append(tableRow)
+                        })
+                    }
+                })
+
+                .catch((error) => {
+                    console.log(error)
                 })
 
         </script>

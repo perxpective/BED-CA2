@@ -530,19 +530,20 @@ app.post("/login", (req, res) => {
     // Perform function to handle the user login
     user.userLogin(email, password, (err, result) => {
         if (err) {
-            res.status(500).send()
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
             return
         } if (result === null) {
             // Return error code 404 if unauthorized
             res.status(401).send({"Message":"Unauthorized!"})
             return
         } else {
+            // Create the payload
             const payload = { 
                 userid: result[0].userid, 
                 role: result[0].role 
             }
             console.log(payload)
-            // Sign the payload with the secret key
+            // Sign the payload with the secret key with SHA256
             jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" , expiresIn: 86400 }, (err, token) => {
                 if (err) {
                     console.log(err)
@@ -561,6 +562,7 @@ app.post("/login", (req, res) => {
 
 // Endpoint to get ALL flights
 app.get("/flight", (req, res) => {
+    // Perform function to get all flights from flight database
     flight.getAllFlights((err, result) => {
         if (!err) {
             console.log(result)
@@ -588,6 +590,7 @@ app.delete("/airport/:airportid", (req, res) => {
 
 // Endpoint to get return flights
 app.get("/returnFlights/:originAirportId/:destinationAirportId", (req, res) => {
+    // Get request parameters and queries
     var originAirportId = req.params.originAirportId
     var destinationAirportId = req.params.destinationAirportId
     var returnDate = "%" + req.query.returnDate + "%"
@@ -596,6 +599,7 @@ app.get("/returnFlights/:originAirportId/:destinationAirportId", (req, res) => {
 
     // Check if minimum and maximum price rangge values are left blank
     if (min == "" && max == "") {
+        // Function to search for flights with the inputted origin and destination airport
         flight.findFlight(destinationAirportId, originAirportId, returnDate, (err, result) => {
             if (!err) {
                 console.log(result)
@@ -606,6 +610,7 @@ app.get("/returnFlights/:originAirportId/:destinationAirportId", (req, res) => {
             }
         })
     } else {
+        // Run function to filter flights according to user input price range if min and max queries detected
         flight.searchFlightsByPriceRange(min, max, (err, result) => {
             if (!err) {
                 // Function to search for flights with the inputted origin and destination airport
@@ -645,7 +650,10 @@ app.get("/returnFlights/:originAirportId/:destinationAirportId", (req, res) => {
 
 // Endpoint to get flight by flightid
 app.get("/flight/:flightid", (req, res) => {
+    // Get flightid parameters
     var flightid = req.params.flightid
+
+    // Run function to get flight by flightid
     flight.getFlightById(flightid, (err, result) => {
         if (!err) {
             console.log(result)
@@ -659,7 +667,10 @@ app.get("/flight/:flightid", (req, res) => {
 
 // Endpoint to get airport information by airportid
 app.get("/airport/:airportid", (req, res) => {
+    // Get airportid parameters
     var airportid = req.params.airportid
+
+    // Run function to get airport by airportid
     airport.getAirportById(airportid, (err, result) => {
         if (!err) {
             console.log(result)
@@ -673,7 +684,10 @@ app.get("/airport/:airportid", (req, res) => {
 
 // Endpoint to get promotion by flightid 
 app.get("/flightPromotions/:flightid", (req, res) => {
+    // Get flightid parameters
     var flightid = req.params.flightid
+
+    // Function to get promotions by flightid
     promotion.getPromotionByFlightId(flightid, (err, result) => {
         if (!err) {
             console.log(result)
@@ -687,12 +701,16 @@ app.get("/flightPromotions/:flightid", (req, res) => {
 
 // Endpoint to add new flight to cart
 app.post("/cart/:flightid/:userid", verifyToken, (req, res) => {
+    // Get request parameters
     var flightid = req.params.flightid
     var userid = req.params.userid
+
+    // Get request body
     var seatPrice  = req.body.seatPrice
     var quantity = req.body.quantity
     var discount = req.body.discount
 
+    // Run function to add flight data to cart
     cart.addFlightToCart(userid, flightid, seatPrice, quantity, discount, (err, result) => {
         if (!err) {
             console.log(result)
@@ -709,6 +727,7 @@ app.post("/cart/:flightid/:userid", verifyToken, (req, res) => {
 
 // Endpoint to get cart information from cart database
 app.get("/cart/:userid", verifyToken, (req, res) => {
+    // Get userid parameters
     var userid = req.params.userid
 
     // Perform function to get cart information
@@ -725,6 +744,7 @@ app.get("/cart/:userid", verifyToken, (req, res) => {
 
 // Endpoint to delete cart item by the flightid from cart database
 app.delete("/cart/:flightid/:userid", verifyToken, (req, res) => {
+    // Get flightid and userid parameters
     var flightid = req.params.flightid
     var userid = req.params.userid
 
@@ -758,6 +778,8 @@ app.delete("/cart", verifyToken, (req, res) => {
 app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
     // Get cartid parameters
     var cartid = req.params.cartid
+
+    // Run function to get cart item by its cartid
     cart.getCartItemById(cartid, (err, result) => {
         if (!err) {
             console.log(result)
@@ -771,22 +793,25 @@ app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
 
 // Endpoint to get all flights sorted
 app.get("/searchFlights", (req, res) => {
+    // Get search queries
     var searchQuery = req.query.searchQuery
+
+    // If search query is undefined (blank)
     if (searchQuery === undefined) {
         searchQuery = "%%"
     } else {
         searchQuery = "%" + searchQuery + "%"
     }
 
+    // Get sorting method query
     var sortMethod = req.query.sort
 
+    // If sort method is undefined (blank)
     if (sortMethod === "undefined") {
         sortMethod = ""
     }
-
-    console.log(searchQuery)
-    console.log(sortMethod)
     
+    // Run function to search flights and sort according to the queries
     flight.searchFlights(searchQuery, sortMethod, (err, result) => {
         if (!err) {
             console.log(result)
@@ -800,6 +825,7 @@ app.get("/searchFlights", (req, res) => {
 
 // Endpoint to get transfer flight by origin, transfer and destination airport
 app.get("/searchTransfer/flight/:originAirportId/:transferAirportId/:destinationAirportId", (req, res) => {
+    // Get request parameters
     var originAirportId = req.params.originAirportId
     var transferAirportId = req.params.transferAirportId
     var destinationAirportId = req.params.destinationAirportId
@@ -818,7 +844,10 @@ app.get("/searchTransfer/flight/:originAirportId/:transferAirportId/:destination
 
 // Endpoint to search promotions by query
 app.get("/promotions/search", (req, res) => {
+    // Get request query
     var query = "%" + req.query.query + "%"
+
+    // Function to search promotions in the promotion database
     promotion.searchPromotions(query, (err, result) => {
         if (!err) {
             console.log(result)
@@ -832,7 +861,10 @@ app.get("/promotions/search", (req, res) => {
 
 // Endpoint to get booking history by userid
 app.get("/booking/:userid", (req, res) => {
+    // Get userid paramters
     var userid = req.params.userid
+
+    // Function to get booking information from booking database by userid
     booking.getBookingByUserId(userid, (err, result) => {
         if (!err) {
             console.log(result)
@@ -846,6 +878,7 @@ app.get("/booking/:userid", (req, res) => {
 
 // Endpoint to get all booking data from booking table
 app.get("/booking", verifyToken, (req, res) => {
+    // Function to get all booking information from the booking table
     booking.getAllBooking((err, result) => {
         if (!err) {
             console.log(result)
@@ -859,6 +892,7 @@ app.get("/booking", verifyToken, (req, res) => {
 
 // Endpoint to clear booking history
 app.delete("/booking", verifyToken, (req, res) => {
+    // Function to clear all booking history from booking database
     booking.clearAllBooking((err, result) => {
         if (!err) {
             console.log(result)
@@ -872,7 +906,10 @@ app.delete("/booking", verifyToken, (req, res) => {
 
 // Endpoint to clear booking history by userid
 app.delete("/booking/:userid", verifyToken, (req, res) => {
+    // Get userid paramters
     var userid = req.params.userid
+
+    // Function to clear booking history according to userid
     booking.clearBookingById(userid, (err, result) => {
         if (!err) {
             console.log(result)

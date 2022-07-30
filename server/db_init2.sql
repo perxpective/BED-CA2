@@ -1,14 +1,11 @@
 /* 
-BED Assignment CA1
+BED Assignment CA2
 -   Name: Lee Quan Jun Ervin
 -   Admin No: 2104005
 -   Class: DISM/FT/2B/21
 -   Filename: server.js
 -   Description: SQL Script to run to create the SP AIR schema, tables and columns
 */
-
-CREATE DATABASE  IF NOT EXISTS `sp_air` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `sp_air`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: sp_air
@@ -38,9 +35,11 @@ CREATE TABLE `airport` (
   `name` varchar(45) NOT NULL,
   `country` varchar(45) NOT NULL,
   `description` varchar(110) NOT NULL,
+  `iata` varchar(45) NOT NULL,
   PRIMARY KEY (`airportid`),
-  UNIQUE KEY `name_UNIQUE` (`name`) /*!80000 INVISIBLE */
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `name_UNIQUE` (`name`) /*!80000 INVISIBLE */,
+  UNIQUE KEY `iata_UNIQUE` (`iata`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,11 +61,32 @@ CREATE TABLE `booking` (
   PRIMARY KEY (`bookingid`),
   KEY `userid_idx` (`userid`),
   KEY `flightid_idx` (`flightid`),
-  KEY `name_idx` (`name`),
   CONSTRAINT `flightid` FOREIGN KEY (`flightid`) REFERENCES `flight` (`flightid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `name` FOREIGN KEY (`name`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cart`
+--
+
+DROP TABLE IF EXISTS `cart`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cart` (
+  `cartid` int NOT NULL AUTO_INCREMENT,
+  `userid` int NOT NULL,
+  `flightid` int NOT NULL,
+  `cost` float NOT NULL,
+  `quantity` int NOT NULL,
+  `discount` float NOT NULL,
+  PRIMARY KEY (`cartid`),
+  UNIQUE KEY `flightid_UNIQUE` (`flightid`),
+  KEY `flightid_idx` (`flightid`),
+  KEY `userid_idx` (`userid`),
+  CONSTRAINT `flightid_idx` FOREIGN KEY (`flightid`) REFERENCES `flight` (`flightid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `userid_idx` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,15 +105,16 @@ CREATE TABLE `flight` (
   `embarkDate` datetime NOT NULL,
   `travelTime` varchar(45) NOT NULL,
   `price` float NOT NULL,
-  `flight_pic_url` longtext,
+  `flight_pic_url` longtext NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`flightid`),
   UNIQUE KEY `flightid_UNIQUE` (`flightid`),
+  UNIQUE KEY `flightCode_UNIQUE` (`flightCode`),
   KEY `originAirport_idx` (`originAirport`),
   KEY `destinationAirport_idx` (`destinationAirport`),
   CONSTRAINT `destinationAirport` FOREIGN KEY (`destinationAirport`) REFERENCES `airport` (`airportid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `originAirport` FOREIGN KEY (`originAirport`) REFERENCES `airport` (`airportid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +133,7 @@ CREATE TABLE `promotion` (
   PRIMARY KEY (`promotionid`),
   KEY `flightid_idx` (`flightid`),
   CONSTRAINT `fk_flightid` FOREIGN KEY (`flightid`) REFERENCES `flight` (`flightid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +155,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`userid`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -146,4 +167,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-25 18:06:31
+-- Dump completed on 2022-07-31  1:27:51

@@ -202,3 +202,11 @@ Added the following additional endpoints to enable maximum functionality of the 
 - Option for user to edit their user information and change their profile picture (with new profile picture preview)
 - Users can choose quantity and seat class for their selected flight and add them to the cart
 - Admins can review booking history in a table in the admin panel and can delete the table when needed
+
+## Additional GUI Features
+- Cursor-tracking background implemented with Vanta.js, an open source Three.js library
+- Animations and transitions implemented with Animista, an open source keyframe generator for popular animations
+- Most of the UI and form inputs makes the most out of the Bootstrap v5.0 framework
+- Form validations done with Bootstrap JS Scripts
+- Icons are sourced from FontAwesome
+- PNG Icons are sourced from Flaticon

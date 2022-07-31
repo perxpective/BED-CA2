@@ -74,10 +74,13 @@ app.get("/promotions", (req, res) => {
     res.sendFile("./public/promotions.html", { root: __dirname })
 })
 
+app.get("/bookingHistory", (req, res) => {
+    res.sendFile("./public/bookinghistory.html", { root: __dirname })
+})
+
 app.get("*", (req, res) => {
   res.sendFile("./public/404.html", { root: __dirname });
 });
-
 
 const PORT = 3000
 app.listen(PORT, () => {

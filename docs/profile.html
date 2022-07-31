@@ -1,0 +1,373 @@
+<!--
+    BED Assignment CA2
+    -   Name: Lee Quan Jun Ervin
+    -   Admin No: 2104005
+    -   Class: DISM/FT/2B/21
+    -   Filename: client/public/profile.html
+    -   Description: Profile page of SP AIR
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Favicon Icon -->
+        <link rel="icon" type="image/x-icon" href="./images/favicon.png">
+        <!-- Link with jQuery library-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <!-- Link with Popper.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <!-- Link with Bootstrap 5.0 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+        <!-- Link with Axios library-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <!-- Link CSS file styles -->
+        <link rel="stylesheet" href="./css/profile.css">
+        <link rel="stylesheet" href="./css/global.css">
+        <!-- Link with Google Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
+        <!-- Link with FontAwesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+            integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>My Profile | SP AIR</title>
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-md navbar-light fixed-top" aria-label="Fourth navbar example">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="./images/favicon.png" alt="SP AIR Logo"
+                        id="spairlogo"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sp-air-navigation-bar"
+                    aria-controls="sp-air-navigation-bar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="sp-air-navigation-bar">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/searchflights">Book a Flight</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/transferFlights">Connections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/browseFlights">Browse Flights</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/promotions">Promotions</a>
+                        </li>
+                    </ul>
+                    <a id="profile" href="/profile"><i class="fa-regular fa-user icon" style="font-size:x-large"></i></a>
+                    <a id="cart" href="/cart"><i class="fa-solid fa-cart-arrow-down" style="font-size:x-large"></i></a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- User Information Card -->
+        <section id="profile" class="100vt flip-in-hor-bottom">
+            <div class="container" style="padding-top:10rem;">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div id="profile-card" class="col col-lg-6 mb-0 mb-lg-0 tracking-in-expand">
+                        <div class="card mb-3" style="border-radius: .5rem;">
+                            <div class="row g-0">
+                                <div class="col-md-4 gradient-custom text-center text-black"
+                                    style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                    <div id="user-profile-pic">
+                                    </div>
+                                    <div id="username"></div>
+                                    <div id="buttons" class="p-4">
+                                        <a type="button" class="btn btn-primary m-1" id="logout">Logout<i class="fa-solid fa-right-from-bracket" style="padding-right:5px;"></i></a>
+                                        <a type="button" class="btn btn-primary m-1" id="view-booking-history" href="/bookingHistory">View Booking History</a>
+                                        <a class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#edit-profile">Edit Profile<i class="fa-solid fa-pen-to-square" style="padding-right:5px;"></i></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body p-4">
+                                        <h1>User Information</h1>
+                                        <hr class="mt-0 mb-4">
+                                        <div id="user-info">
+                                            <div class="col-6 mb-3">
+                                                <h6>Email</h6>
+                                                <div id="email">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <h6>Contact</h6>
+                                                <div id="contact">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <h6>Role</h6>
+                                                <div id="role">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Content for Edit Profile -->
+        <div class="modal fade text-center" id="edit-profile" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3" style="width:50%; display:block; margin:0px auto;">
+                            <img id="upload-photo" src="./images/upload.jpg" alt="Profile Picture"
+                                class="img-fluid my-5 rounded-circle border border-dark" style="width: 100px; height: 100px;" />
+                            <label for="upload-photo" class="form-label">Change Profile Picture</label>
+                            <input class="form-control form-control-sm" id="upload-profile-pic" type="file" accpet="image/*"
+                                onchange="imagePreview(this)">
+                        </div>
+                        <form id="edit-profile-form" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <div class="invalid-feedback">
+                                    Please enter this field!
+                                </div>
+                                <label id="change-username" for="change-username" class="col-form-label">Change Username</label>
+                            </div>
+                            <div class="mb-3">
+                                <div class="invalid-feedback">
+                                    Please enter this field!
+                                </div>
+                                <label id="change-email" for="change-email" class="col-form-label">Change Email:</label>
+                            </div>
+                            <div class="mb-3">
+                                <div class="invalid-feedback">
+                                    Please enter this field!
+                                </div>
+                                <label id="change-contact" for="change-contact" class="col-form-label">Change Contact
+                                    Number:</label>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    id="close">Close</button>
+                                <button id="update-profile" type="submit" class="btn btn-primary">Update Profile</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Preview for Edit Profile Picture in Edit Profile Modal -->
+        <script>
+             function imagePreview(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader()
+                    reader.onload =  (event) => {
+                        $("#upload-photo").attr("src", event.target.result)
+                    }
+                    reader.readAsDataURL(input.files[0])
+                }
+            }
+        </script>
+
+        <!-- Redirect user to login page if not logged in -->
+        <script>
+            // Get token from the local storage
+            var token = localStorage.getItem("token")
+            var loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"))
+            // Redirect if guest user clicks on profile
+            if (token === null || isNaN(loggedInUserID)) {
+                window.location.assign("/login")
+            } else {
+                $("#logout").click(() => {
+                    localStorage.clear()
+                    window.location.assign("/login")
+                })
+
+                $("#close").click(() => {
+                    window.location.reload()
+                })
+            }
+        </script>
+
+        <!-- Form Validation -->
+        <script>
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms)
+                    .forEach( function (form) {
+                        form.addEventListener('submit',  function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        </script>
+
+        <!-- Append user information to the profile -->
+        <script>
+            const baseURL = "http://localhost:8081"
+
+            // Get information from user database and append to HTML information divs
+            axios.get(`${baseURL}/users/${loggedInUserID}`, { 
+                headers: { 
+                    "Authorization": "Bearer " + token 
+                } 
+            })
+                .then((response) => {
+                    const user = response.data[0]
+                    // Append Email
+                    $("#email").append(`
+                    <strong><h4>${user.email}</h4></strong>
+                    `)
+                    // Append Username
+                    $("#username").append(`
+                    <strong><h2>${user.username}</h2></strong>
+                    `)
+                    // Append Contact
+                    $("#contact").append(`
+                    <strong><h4>${user.contact}</h4></strong>
+                    `)
+                    // Append Role
+                    $("#role").append(`
+                    <strong><h4>${user.role}</h4></strong>
+                    `)
+                    // Append Profile Pic
+                    $("#user-profile-pic").append(`
+                    <img id="profile-pic" src="${user.profile_pic_url}" alt="Profile Picture" class="img-fluid my-5 rounded-circle border border-dark" style="width: 100px; height: 100px;" />
+                    `)
+
+                    $("#user-profile-pic-2").append(`
+                    <img id="profile-pic" src="${user.profile_pic_url}" alt="Profile Picture" class="img-fluid my-5 rounded-circle border border-dark" style="width: 100px; height: 100px;" />
+                    `)
+
+                    // Pre-fill exisitng information in Edit Profile modal
+                    $("#change-username").append(`
+                    <input type="text" class="form-control" id="new-username" value=${user.username} required>
+                    `)
+                    $("#change-email").append(`
+                    <input type="text" class="form-control" id="new-email" value=${user.email} required>
+                    `)
+                    $("#change-contact").append(`
+                    <input type="text" class="form-control" id="new-contact" value=${user.contact} required>
+                    `)
+
+                    // Append the administrative panel button if user role is admin
+                    if (user.role === "Administrator") {
+                        $("#buttons").append(`
+                        <a class="btn btn-primary m-1" href="/admin">Admin Panel<i class="fa-solid fa-hammer" style="padding-right:5px;"></i></a>
+                        `)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        </script>
+
+        <!-- Update User Profile -->
+        <script>
+            $("#edit-profile-form").submit((event) => {
+                // Get userid
+                const loggedInUserID = localStorage.getItem("loggedInUserID") 
+
+                // Prevent the page from loading
+                event.preventDefault()
+
+                // Get updated email, contact number and username
+                const newEmail = $("#new-email").val()
+                const newUsername = $("#new-username").val()
+                const newContact = $("#new-contact").val()
+
+                // Get new profile picture
+                const newProfilePic = document.getElementById("upload-profile-pic").files[0]
+
+                // Axios GET request to obtain information about logged in user
+                axios.get(`${baseURL}/users/${loggedInUserID}`, { 
+                    headers: { 
+                        "Authorization": "Bearer " + token 
+                    } 
+                })
+                    .then((response) => {
+                        // Get user information
+                        const user2 = response.data[0]
+                        currentProfilePic = user2.profile_pic_url
+                        if (newEmail === '') {
+                            alert("Please fill in the email field!")
+                        } else {
+                            user2.email = newEmail
+                            if (newUsername === '') {
+                                alert("Please fill in the username field!")
+                            } else {
+                                user2.username = newUsername
+                                if (newContact === '') {
+                                    alert("Please fill in the contact field!")
+                                } else {
+                                    user2.contact = newContact
+                                    // If profile pic input is not undefined, use new profile pic
+                                    // If not, retain the current profile picture
+                                    if (newProfilePic !== undefined) {
+                                        user2.profile_pic_url = newProfilePic
+                                    } else {
+                                        user2.profile_pic_url = currentProfilePic
+                                    }
+                                    // Check if file uploaded is an image
+                                    var imageFormatList = ["image/png", "image/jpg", "image/jpeg"]
+                                    if (user2.profile_pic_url === newProfilePic) {
+                                        if (!(imageFormatList.includes(user2.profile_pic_url.type))) {
+                                            alert("Only upload image formats for profile picture (jpeg, png, jpeg)")
+                                        }
+                                    }
+
+                                    // Compile form data to be sent to backend server
+                                    var formData = new FormData()
+                                    formData.append("username", user2.username)
+                                    formData.append("email", user2.email)
+                                    formData.append("contact", user2.contact)
+                                    formData.append("profile_pic_url", user2.profile_pic_url)
+
+                                    // Axios PUT method to update user information to the user database
+                                    axios.put(`${baseURL}/users/${user2.userid}`, formData, {
+                                        headers: {
+                                            "Content-Type": "multipart/form-data",
+                                            "Authorization": "Bearer " + token
+                                        }
+                                    })
+                                        .then((response) => {
+                                            window.location.reload()
+                                        })
+
+                                        .catch((error) => {
+                                            if (error.response.status === 422) {
+                                                alert("Username or email already exists!")
+                                            }
+                                        })
+                                    
+                                }
+                            }
+                        }
+                    })
+
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            })
+        </script>
+    </body>
+</html>

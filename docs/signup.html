@@ -1,0 +1,209 @@
+<!--
+    BED Assignment CA2
+    -   Name: Lee Quan Jun Ervin
+    -   Admin No: 2104005
+    -   Class: DISM/FT/2B/21
+    -   Filename: client/public/signup.html
+    -   Description: Sign up page of SP AIR
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Favicon Icon -->
+        <link rel="icon" type="image/x-icon" href="./images/favicon.png">
+        <!-- Link with Bootstrap 5.0 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- Link with jQuery library -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <!-- Link with Popper.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <!-- Link with Axios library -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <!-- Link CSS file styles -->
+        <link rel="stylesheet" href="./css/login.css">
+        <link rel="stylesheet" href="./css/global.css">
+        <!-- Link with Google Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
+        <!-- Link with Vanta.js animated background -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                VANTA.CLOUDS({
+                    el: "#vanta",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00
+                })
+            })
+        </script>
+        <title>Sign Up | SP AIR</title>
+    </head>
+    <body>
+        <!-- Vanta.js Animated Background Div -->
+        <div id="vanta">
+        </div>
+        
+        <!-- Form Container -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="card w-100 border-0 shadow rounded-3 my-5" id="login-card">
+                        <a href="/"><img id="logo" src="./images/SP AIR LOGO.png" alt="SP AIR logo"></a>
+                        <div class="card-body p-4 p-sm-5">
+                            <h1 class="card-title text-center mb-5">Sign Up</h1>
+                            <form class="needs-validation" id="signup-form" novalidate>
+                                <div class="form-floating mb-3">
+                                    <!-- Email Address Input -->
+                                    <input type="email" class="form-control" id="email" placeholder="." required>
+                                    <label for="email">New Email address</label>
+                                    <div class="invalid-feedback">
+                                        Please enter your email address!
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <!-- Username Input -->
+                                    <input type="text" class="form-control" id="username" placeholder="." required>
+                                    <label for="username">New Username</label>
+                                    <div class="invalid-feedback">
+                                        Please enter your username!
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <!-- Contact Number Input -->
+                                    <input type="tel" class="form-control" id="contact" placeholder="." pattern="[8,9][\d][\d][\d][\d][\d][\d][\d]" required>
+                                    <label for="contact">New Contact Number</label>
+                                    <div class="invalid-feedback">
+                                        Please enter a number!
+                                    </div>
+                                </div>
+                                <div class="row">
+                                   <div class="form-floating mb-3 col">
+                                        <!-- Password Input -->
+                                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                                        <label for="password">New Password</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid password!<br>(At least 8 characters long.)
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3 col">
+                                        <!-- Confirm Password Input -->
+                                        <input type="password" class="form-control" id="confirm-password" placeholder="Password" required>
+                                        <label for="confirm-password">Confirm Password</label>
+                                        <div class="invalid-feedback">
+                                            Please confirm your password!
+                                        </div>
+                                    </div> 
+                                </div>
+                                <!-- Form Submit Button -->
+                                <div class="d-grid">
+                                    <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Sign Up</button>
+                                </div>
+                                <!-- Link to Sign Up page-->
+                                <div class="d-grid text-center" style="padding-top: 10px">
+                                    <p>Already a user? Login <u><a href="/login">here</a></u>!</p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Script to disable form submissions if there are empty fields -->
+        <script>
+                (() => {
+                    'use strict'
+                    window.addEventListener('load', () => {
+                        // Get all forms that have custom validation
+                        var forms = document.getElementsByClassName("needs-validation")
+
+                        // Loop over them and prevent submission
+                        var validation = Array.prototype.filter.call(forms, (form) => {
+                            form.addEventListener('submit', (event) => {
+                                if (form.checkValidity() == false) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                } if ($("password").val() != $("confirm-password").val()) {
+                                    alert("Passwords do not match")
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+                                form.classList.add('was-validated')
+                            }, false)
+                        })
+                    }, false)
+                })()
+        </script>
+
+        <!-- jQuery and Axios Script to add new user information to user database -->
+        <script>
+            const baseURL = "http://localhost:8081"
+            $("#signup-form").submit((event) => {
+
+                // Prevent the page from loading
+                event.preventDefault()
+
+                // Check passwords
+                const password = $("#password").val()
+                const confirmPassword = $("#confirm-password").val()
+                if (password == confirmPassword && password !== '') {
+                    // Get user information 
+                    const username = $("#username").val()
+                    const email = $("#email").val()
+                    const contact = $("#contact").val()
+
+                    // Default profile pic is null, default.png icon shown in profile
+                    const profile_pic_url = null
+                    var role = null
+
+                    // Check email to give admin privileges
+                    var emailStringList = email.split("@")
+                    if (emailStringList[1] == "spair.com") {
+                        role = "Administrator"
+                    } else {
+                        role = "Customer"
+                    }
+
+                    const requestBody = {
+                        username: username,
+                        email: email,
+                        contact: contact,
+                        password: password,
+                        role: role,
+                        profile_pic_url: profile_pic_url
+                    }
+
+                    // Axios POST method to create a new user and add to user database
+                    axios.post(`${baseURL}/users`, requestBody)
+                        // Add new user information to the user database
+                        .then((response) => {
+                            window.location.href = "/login"
+                        })
+                        // Catch Error Code 422 (Duplicate Entry Error) and output error message
+                        .catch((error) => {
+                            console.log(error.response)
+                            if (error.response.status === 422) {
+                                alert(`The email (${email}) or username (${username}) you entered already exists! Please enter a unique input!`)
+                                window.location.href = "/signup"
+                            }
+                        })
+                } else (
+                    alert("Password entered is invalid")
+                )
+            })
+        </script>
+    </body>
+</html>

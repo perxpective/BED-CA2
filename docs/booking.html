@@ -1,0 +1,420 @@
+<!--
+    BED Assignment CA2
+    -   Name: Lee Quan Jun Ervin
+    -   Admin No: 2104005
+    -   Class: DISM/FT/2B/21
+    -   Filename: client/public/booking.html
+    -   Description: Page to show booking of SP AIR flights
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Favicon Icon -->
+        <link rel="icon" type="image/x-icon" href="./images/favicon.png">
+        <!-- Link with jQuery library-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <!-- Link with Popper.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <!-- Link with Bootstrap 5.0 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+        <!-- Link with Axios library-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <!-- Link CSS file styles -->
+        <link rel="stylesheet" type="text/css" href="./css/global.css">
+        <!-- Link with Google Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
+        <!-- Link with FontAwesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+            integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- Link with Vanta.js animated background -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                VANTA.CLOUDS({
+                    el: "#vanta",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00
+                })
+            })
+        </script>
+        <title>Book Flight | SP AIR</title>
+    </head>
+    <body>
+        <!-- Vanta.js Animated Background Div -->
+        <div id="vanta"></div>
+
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-md navbar-light fixed-top" aria-label="SP AIR Navigation Bar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="./images/favicon.png" alt="SP AIR Logo" id="spairlogo"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sp-air-navigation-bar"
+                    aria-controls="sp-air-navigation-bar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="sp-air-navigation-bar">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/searchflights">Search Flights</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/transferflights">Connections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/browseFlights">Browse Flights</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/promotions">Promotions</a>
+                        </li>
+                    </ul>
+                    <a id="profile" href="/profile"><i class="fa-regular fa-user icon" style="font-size:x-large"></i></a>
+                    <a id="cart" href="/cart"><i class="fa-solid fa-cart-arrow-down" style="font-size:x-large"></i></a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Checkout Div -->
+        <section class="p-2" style="background-color: rgba(255, 255, 255, 0.635);">
+            <div class="container pb-5" style="padding-top: 120px;">
+                <main>
+                    <div class="py-5 text-center">
+                        <h2>Flight Booking Checkout</h2>
+                    </div>
+            
+                    <div class="row g-5">
+                        <div class="col-md-5 col-lg-4 order-md-last">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Your flight booking</span>
+                            </h4>
+                            <ul class="list-group mb-3" id="flight-booking-information">
+                            </ul>
+                        </div>
+                        <div class="col-md-7 col-lg-8">
+                            <h4 class="mb-3">Billing address</h4>
+                            <form class="needs-validation" id="checkout" novalidate>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="firstName" class="form-label">First name</label>
+                                        <input type="text" class="form-control" id="firstName" required>
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-sm-6">
+                                        <label for="lastName" class="form-label">Last name</label>
+                                        <input type="text" class="form-control" id="lastName" required>
+                                        <div class="invalid-feedback">
+                                            Valid last name is required.
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-6">
+                                        <label for="username" class="form-label">Username</label>
+                                        <div id="username">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <div id="email">
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-12">
+                                        <label for="passport" class="form-label">Passport Number (NRIC)</label>
+                                        <input type="text" class="form-control" id="passport" placeholder="T0123456A" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid passport number
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-12">
+                                        <label for="address" class="form-label">Nationality</label>
+                                        <input type="text" class="form-control" id="nationality" placeholder="e.g. Singaporean" required>
+                                        <div class="invalid-feedback">
+                                            Please enter your nationality.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="address" class="form-label">Age<span class="text-muted"> (You must be at least 18 years old to make a payment)</span></label>
+                                        
+                                        <input type="number" min="18" class="form-control" id="age" required>
+                                        <div class="invalid-feedback">
+                                            Please enter your age.
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <hr class="my-4">
+            
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="save-info">
+                                    <label class="form-check-label" for="save-info">Save this information for next time</label>
+                                </div>
+            
+                                <hr class="my-4">
+            
+                                <h4 class="mb-3">Payment</h4>
+            
+                                <div class="my-3">
+                                    <div class="form-check">
+                                        <input id="credit" type="radio" class="form-check-input" required>
+                                        <label class="form-check-label" for="credit">Credit card</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input id="debit" type="radio" class="form-check-input" required>
+                                        <label class="form-check-label" for="debit">Debit card</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input id="paypal" type="radio" class="form-check-input" required>
+                                        <label class="form-check-label" for="paypal">PayPal</label>
+                                    </div>
+                                </div>
+            
+                                <div class="row gy-3">
+                                    <div class="col-md-6">
+                                        <label for="cc-name" class="form-label">Name on card</label>
+                                        <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                                        <small class="text-muted">Full name as displayed on card</small>
+                                        <div class="invalid-feedback">
+                                            Name on card is required
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-6">
+                                        <label for="cc-number" class="form-label">Credit card number</label>
+                                        <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Credit card number is required
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-3">
+                                        <label for="cc-expiration" class="form-label">Expiration</label>
+                                        <input type="date" class="form-control" id="cc-expiration" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Expiration date required
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-3">
+                                        <label for="cc-cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Security code required
+                                        </div>
+                                    </div>
+                                    <hr class="my-4">
+                                    <button type="submit" class="w-100 btn btn-primary btn-lg">Continue to checkout</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <script>
+            // Base URL for backend server
+            const baseURL = "http://localhost:8081"
+
+            // Get token from the local storage
+            const token = window.localStorage.getItem("token")
+            const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"))
+            const cartid = window.localStorage.getItem("cartid")
+
+            // Redirect if guest user clicks on profile
+            // Check if token or logged in userid is defined
+            if (token === null || isNaN(loggedInUserID)) {
+                window.location.assign("/login")
+            }
+        </script>
+    
+        <!-- Form Submissions -->
+        <script>
+
+            $("#checkout").submit((event) => {
+                // Prevent page from loading
+                event.preventDefault()
+
+                // Get form values
+                var firstName = $("#firstName").val()
+                var lastName = $("#lastName").val()
+
+                var fullName = [firstName, lastName].join(" ")
+                var passportNumber = $("#passport").val()
+                var nationality = $("#nationality").val()
+                var age = $("#age").val()
+
+                const requestBody = {
+                    name: fullName,
+                    passport: passportNumber,
+                    nationality: nationality,
+                    age: age
+                }
+
+                // Make a booking of flight
+                axios.get(`${baseURL}/checkoutCart/${cartid}`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
+                    .then((response) => {
+                        const cartItem = response.data[0]
+                        const flightid = cartItem.flightid
+                        axios.post(`${baseURL}/booking/${loggedInUserID}/${flightid}`, requestBody, {
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            }
+                        })
+                            .then((response2) => {
+                                axios.delete(`${baseURL}/cart/${cartItem.flightid}/${loggedInUserID}`, {
+                                    headers: {
+                                        "Authorization": "Bearer " + token
+                                    }
+                                })
+                                    .then((response) => {
+                                        alert(`Your flight has been successfully booked! Thank you for choosing SP AIR as your travelling companion!`)
+                                        window.localStorage.removeItem("cartid")
+                                        window.location.assign("/")
+                                    })
+
+                                    .catch((error) => {
+                                        console.log(error)
+                                    })
+                            })
+
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+                    })
+
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            })
+        </script>
+
+        <!-- Append Information -->
+        <script>
+            // Axios GET to get user by userid
+            axios.get(`${baseURL}/users/${loggedInUserID}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+                .then((response) => {
+                    const userInfo = response.data[0]
+
+                    var username = userInfo.username
+                    var email = userInfo.email
+
+                    const usernameHTML = `
+                    <h5><strong>${userInfo.username}</strong></h5>
+                    `
+                    const emailHTML = `
+                    <h5><strong>${userInfo.email}</strong></h5>
+                    `
+                    $("#username").append(usernameHTML)
+                    $("#email").append(emailHTML)
+                })
+
+                .catch((error) => {
+                    console.log(error)
+                })
+
+            // Axios GET method to get cart information
+            axios.get(`${baseURL}/checkoutCart/${cartid}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+                .then((response) => {
+                    const cartItem = response.data[0]
+                    axios.get(`${baseURL}/flight/${cartItem.flightid}`)
+                        .then((response2) => {
+                            const flightData = response2.data[0]
+                            const flightBookingHTML = `
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">${flightData.flightCode} (${flightData.originAirportIata}-${flightData.destinationAirportIata})</h6>
+                                    <small class="text-muted">Departing on ${flightData.embarkDate}</small>
+                                </div>
+                                <span class="text-muted">$${cartItem.cost}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">Quantity</h6>
+                                </div>
+                                <span class="text-muted">${cartItem.quantity}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">Total Redeemed Discounts</h6>
+                                </div>
+                                <span class="text-muted">${cartItem.discount*100}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Total ($)</span>
+                                <strong>${(cartItem.quantity*(1-cartItem.discount)*cartItem.cost).toFixed(2)}</strong>
+                            </li>
+                            `
+                            $("#flight-booking-information").append(flightBookingHTML)
+                        })
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                    
+                .catch((error) => {
+                    console.log(error)
+                })
+
+            })
+
+            .catch((error) => {
+                console.log(error)
+            })
+        </script>
+
+        <!-- Form Validation -->
+        <script>
+            (function () {
+                'use strict'
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.querySelectorAll('.needs-validation')
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        </script>
+    </body>
+</html>

@@ -121,7 +121,7 @@ Database name: sp_air
   - name of airport
   - country of airport
   - description of airport
-  - IATA code
+  - iata code
 
 - bookings - stores booking made by a user
   - booking id
@@ -149,9 +149,9 @@ Database name: sp_air
 ## Foreign Keys
 - airport.airportid = flight.originAirport and flight.destinationAirport
 - flight.flightid = booking.flightid
-- user.userid = booking.userid
+- user.userid = booking.userid = cart.userid
 - user.username = booking.name
-- flight.flightid = promotion.flightid
+- flight.flightid = promotion.flightid = cart.flightid
 
 ## Pages Created
 - 404.html

@@ -177,15 +177,15 @@
             
                                 <div class="my-3">
                                     <div class="form-check">
-                                        <input id="credit" type="radio" class="form-check-input" required>
+                                        <input id="credit" type="radio" name="payment-type" class="form-check-input" required>
                                         <label class="form-check-label" for="credit">Credit card</label>
                                     </div>
                                     <div class="form-check">
-                                        <input id="debit" type="radio" class="form-check-input" required>
+                                        <input id="debit" type="radio" name="payment-type" class="form-check-input" required>
                                         <label class="form-check-label" for="debit">Debit card</label>
                                     </div>
                                     <div class="form-check">
-                                        <input id="paypal" type="radio" class="form-check-input" required>
+                                        <input id="paypal" type="radio" name="payment-type" class="form-check-input" required>
                                         <label class="form-check-label" for="paypal">PayPal</label>
                                     </div>
                                 </div>
@@ -233,6 +233,26 @@
             </div>
         </section>
 
+        <!-- Form Validation -->
+        <script>
+            (function () {
+                'use strict'
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.querySelectorAll('.needs-validation')
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        </script>
+
         <script>
             // Base URL for backend server
             const baseURL = "http://localhost:8081"
@@ -265,53 +285,55 @@
                 var nationality = $("#nationality").val()
                 var age = $("#age").val()
 
-                const requestBody = {
-                    name: fullName,
-                    passport: passportNumber,
-                    nationality: nationality,
-                    age: age
-                }
-
-                // Make a booking of flight
-                axios.get(`${baseURL}/checkoutCart/${cartid}`, {
-                    headers: {
-                        "Authorization": "Bearer " + token
+                if (firstName !== "" || lastName !== "") {
+                    const requestBody = {
+                        name: fullName,
+                        passport: passportNumber,
+                        nationality: nationality,
+                        age: age
                     }
-                })
-                    .then((response) => {
-                        const cartItem = response.data[0]
-                        const flightid = cartItem.flightid
-                        axios.post(`${baseURL}/booking/${loggedInUserID}/${flightid}`, requestBody, {
-                            headers: {
-                                "Authorization": "Bearer " + token
-                            }
-                        })
-                            .then((response2) => {
-                                axios.delete(`${baseURL}/cart/${cartItem.flightid}/${loggedInUserID}`, {
-                                    headers: {
-                                        "Authorization": "Bearer " + token
-                                    }
+    
+                    // Make a booking of flight
+                    axios.get(`${baseURL}/checkoutCart/${cartid}`, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    })
+                        .then((response) => {
+                            const cartItem = response.data[0]
+                            const flightid = cartItem.flightid
+                            axios.post(`${baseURL}/booking/${loggedInUserID}/${flightid}`, requestBody, {
+                                headers: {
+                                    "Authorization": "Bearer " + token
+                                }
+                            })
+                                .then((response2) => {
+                                    axios.delete(`${baseURL}/cart/${cartItem.flightid}/${loggedInUserID}`, {
+                                        headers: {
+                                            "Authorization": "Bearer " + token
+                                        }
+                                    })
+                                        .then((response3) => {
+                                            alert(`Your flight has been successfully booked! Thank you for choosing SP AIR as your travelling companion!`)
+                                            window.localStorage.removeItem("cartid")
+                                            window.location.assign("/")
+                                        })
+    
+                                        .catch((error) => {
+                                            console.log(error)
+                                        })
                                 })
-                                    .then((response3) => {
-                                        alert(`Your flight has been successfully booked! Thank you for choosing SP AIR as your travelling companion!`)
-                                        window.localStorage.removeItem("cartid")
-                                        window.location.assign("/")
-                                    })
-
-                                    .catch((error) => {
-                                        console.log(error)
-                                    })
-                            })
-
-                            .catch((error) => {
-                                console.log(error)
-                            })
-
-                    })
-
-                    .catch((error) => {
-                        console.log(error)
-                    })
+    
+                                .catch((error) => {
+                                    console.log(error)
+                                })
+    
+                        })
+    
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                }
             })
         </script>
 
@@ -390,26 +412,6 @@
                 .catch((error) => {
                     console.log(error)
                 })
-        </script>
-
-        <!-- Form Validation -->
-        <script>
-            (function () {
-                'use strict'
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.querySelectorAll('.needs-validation')
-                // Loop over them and prevent submission
-                Array.prototype.slice.call(forms)
-                    .forEach(function (form) {
-                        form.addEventListener('submit', function (event) {
-                            if (!form.checkValidity()) {
-                                event.preventDefault()
-                                event.stopPropagation()
-                            }
-                            form.classList.add('was-validated')
-                        }, false)
-                    })
-            })()
         </script>
     </body>
 </html>

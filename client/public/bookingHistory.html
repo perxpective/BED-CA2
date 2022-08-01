@@ -113,6 +113,8 @@
                     </table>
                 </div>
             </div>
+
+            <button class="btn btn-danger" id="clear-booking-history" >Clear Booking History</button>
         </section>
 
         <!-- Axios Scripts -->
@@ -124,6 +126,30 @@
             var token = localStorage.getItem("token")
             var loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"))
 
+            // When Clear Booking History button is clicked
+            $("#clear-booking-history").click((event) => {
+                // Prevenet page from loading
+                event.preventDefault()
+
+                // Axios DELETE method to delete booking information containing logged in userid
+                axios.delete(`${baseURL}/booking/${loggedInUserID}`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
+                    .then((response) => {
+                        let confirmAction = confirm("Are you sure you want to clear your booking history?")
+                        if (confirmAction) {
+                            window.location.reload()
+                        }
+                    })
+
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            })
+
+            // Axios GET method to get booking information by logged in userid
             axios.get(`${baseURL}/booking/${loggedInUserID}`, {
                 headers: {
                     "Authorization": "Bearer " + token

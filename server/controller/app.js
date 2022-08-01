@@ -986,7 +986,7 @@ app.delete("/booking", verifyToken, (req, res) => {
 app.delete("/booking/:userid", verifyToken, (req, res) => {
     // Get userid paramters
     var userid = req.params.userid
-
+    
     // Verify userid before booking
     if (isNaN(userid) || userid === undefined) {
         res.status(400).send({"Message":"Bad Request Error"})

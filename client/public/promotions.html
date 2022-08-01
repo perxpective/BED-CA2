@@ -165,54 +165,54 @@
             
             })
 
-            // Get search query from form submission
-            $("#search-promotions").submit((event) => {
-                // Prevent page from loading
-                event.preventDefault()
-                // Clear search results
-                $("#promotion").empty()
-                // Get search query
-                const query = $("#promotion-query").val()
+        // Get search query from form submission
+        $("#search-promotions").submit((event) => {
+            // Prevent page from loading
+            event.preventDefault()
+            // Clear search results
+            $("#promotion").empty()
+            // Get search query
+            const query = $("#promotion-query").val()
 
-                // Axios GET method to get search promotion results
-                axios.get(`${baseURL}/promotions/search?query=${query}`)
-                    .then((response) => {
-                        const promotionList = response.data
-                        promotionList.forEach((promotion, index) => {
-                            const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
-                            const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
-                            // Axios GET method to get flight details by flightid
-                            axios.get(`${baseURL}/flight/${promotion.flightid}`)
-                                .then((response2) => {
-                                    const flightList = response2.data
-                                    flightList.forEach((flight) => {
-                                        const promotionHTML = `
-                                        <div class="col-4 flip-in-hor-bottom">
-                                            <div class="card mb-4 rounded-3 shadow-sm w-100 center">
-                                                <div class="card-header pt-3">
-                                                    <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
-                                                        <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
+            // Axios GET method to get search promotion results
+            axios.get(`${baseURL}/promotions/search?query=${query}`)
+                .then((response) => {
+                    const promotionList = response.data
+                    promotionList.forEach((promotion, index) => {
+                        const promotionStartDate = dateToString(promotion.startDate.split(" ")[0].split("-"))
+                        const promotionEndDate = dateToString(promotion.endDate.split(" ")[0].split("-"))
+                        // Axios GET method to get flight details by flightid
+                        axios.get(`${baseURL}/flight/${promotion.flightid}`)
+                            .then((response2) => {
+                                const flightList = response2.data
+                                flightList.forEach((flight) => {
+                                    const promotionHTML = `
+                                    <div class="col-4 flip-in-hor-bottom">
+                                        <div class="card mb-4 rounded-3 shadow-sm w-100 center">
+                                            <div class="card-header pt-3">
+                                                <h4 class="my-0 fw-normal">Promotion for ${flight.flightCode} (${flight.originAirportIata} - ${flight.destinationAirportIata})</h4>
                                                 </div>
+                                                <div class="card-body">
+                                                    <h1 class="card-title pricing-card-title">${promotion.discount * 100}% off!</h1>
+                                                    <p class="m-0">${promotionStartDate} to ${promotionEndDate}<p>
                                             </div>
                                         </div>
-                                        `
-                                        $("#promotion").append(promotionHTML)
-                                    })
+                                    </div>
+                                    `
+                                    $("#promotion").append(promotionHTML)
                                 })
+                            })
 
-                                .catch((error) => {
-                                    console.log(error)
-                                })
-                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
                     })
+                })
 
-                    .catch((error) => {
-                        console.log(error)
-                    })
+                .catch((error) => {
+                    console.log(error)
+                })
         })
-
+        
     </script>
 </html>

@@ -124,35 +124,34 @@
         
         <!-- Script to disable form submissions if there are empty fields -->
         <script>
-                (() => {
-                    'use strict'
-                    window.addEventListener('load', () => {
-                        // Get all forms that have custom validation
-                        var forms = document.getElementsByClassName("needs-validation")
+            (() => {
+                'use strict'
+                window.addEventListener('load', () => {
+                    // Get all forms that have custom validation
+                    var forms = document.getElementsByClassName("needs-validation")
 
-                        // Loop over them and prevent submission
-                        var validation = Array.prototype.filter.call(forms, (form) => {
-                            form.addEventListener('submit', (event) => {
-                                if (form.checkValidity() == false) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                } if ($("password").val() != $("confirm-password").val()) {
-                                    alert("Passwords do not match")
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                }
-                                form.classList.add('was-validated')
-                            }, false)
-                        })
-                    }, false)
-                })()
+                    // Loop over them and prevent submission
+                    var validation = Array.prototype.filter.call(forms, (form) => {
+                        form.addEventListener('submit', (event) => {
+                            if (form.checkValidity() == false) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            } if ($("password").val() != $("confirm-password").val()) {
+                                alert("Passwords do not match")
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+                }, false)
+            })()
         </script>
 
         <!-- jQuery and Axios Script to add new user information to user database -->
         <script>
             const baseURL = "http://localhost:8081"
             $("#signup-form").submit((event) => {
-
                 // Prevent the page from loading
                 event.preventDefault()
 
@@ -192,6 +191,7 @@
                         .then((response) => {
                             window.location.href = "/login"
                         })
+
                         // Catch Error Code 422 (Duplicate Entry Error) and output error message
                         .catch((error) => {
                             console.log(error.response)

@@ -266,20 +266,22 @@
                                                                     <p class="card-text">Departure on ${date}</p>
                                                                 </div>
                                                             </div>
-        
-                                                            <div class="col-md-7">
-                                                                <table class="w-100 text-center">
-                                                                    <tr>
-                                                                        <td><h2>${startTime} ${flight.originAirportIata}</h2></td>
-                                                                        <td><h2>&#9992</h2></td>
-                                                                        <td><h2>${endTime} ${flight.destinationAirportIata}</h2></td>
-                                                                    </tr>
-                                                                    <tr >
-                                                                        <td><p class="card-subtitle">${flight.originAirport}</p></td>
-                                                                        <td>${duration}</td>
-                                                                        <td><p class="card-subtitle">${flight.destinationAirport}</p></td>
-                                                                    </tr>
-                                                                </table>
+
+                                                            <div class="col-md-7 text-center">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <h2>${startTime} ${flight.originAirportIata}</h2>
+                                                                        <p class="card-subtitle">${flight.originAirport}</p>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <h2>&#9992</h2>
+                                                                        ${duration}
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <h2>${endTime} ${flight.destinationAirportIata}</h2>
+                                                                        <p class="card-subtitle">${flight.destinationAirport}</p>
+                                                                    </div>
+                                                                </div>
                                                             </div>
         
                                                             <div class="col-md-3 text-center">
@@ -352,7 +354,7 @@
                                                                                     </div>
                                                                                 </div>
                             
-                                                                                <div class="col-md-7">
+                                                                                <div class="col-md-7 text-center">
                                                                                     <div class="row">
                                                                                         <div class="col">
                                                                                             <h2>${startTime} ${flight.originAirportIata}</h2>
@@ -371,7 +373,7 @@
                             
                                                                                 <div class="col-md-3 text-center">
                                                                                     <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
-                                                                                    <h3>$${flight.price}</h3>
+                                                                                    <h3>$${(flight.price).toFixed(2)}</h3>
                                                                                     <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
                                                                                 </div>
                                                                             </div>
@@ -386,6 +388,10 @@
                                                     })
                                                 }
                                             })
+
+                                            .catch((error) => {
+                                                console.log(error)
+                                            })
                                     }
                                 })
                                 document.getElementById("flight-search-results-1").scrollIntoView({ block: "start" })
@@ -396,8 +402,6 @@
                         .catch((error) => {
                             console.log(error.response.data)
                         })
-                } else if (embarkDate !== '' && returnDate !== '') {
-
                 } else {
                     alert("Please input the required options!")           
                 }

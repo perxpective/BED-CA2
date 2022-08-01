@@ -371,6 +371,7 @@
                     </tbody>
                 </table>
             </div>
+
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-new-promotion">
                 Add New Promotion
@@ -406,8 +407,7 @@
             </div>
         </div>
 
-
-        <!-- Modal -->
+        <!-- Modal for New Promotion -->
         <div class="modal fade" id="add-new-promotion" tabindex="-1" aria-labelledby="add-new-promotion" aria-hidden="true"
             data-bs-keyboard="false" data-bs-backdrop="static">
             <div class="modal-dialog">
@@ -490,10 +490,13 @@
         </div>
 
         <div id="toast"></div>
+
+        <!-- Get today's date! -->
         <script>
             // Get date's date
             var dateToday = new Date()
         </script>
+
         <!-- Function to redirect user to flight page with flightid local storage -->
         <script>
             function flightRedirect(flightid) {
@@ -528,7 +531,6 @@
             const token = localStorage.getItem("token")
             const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"))
 
-            // Redirect if guest user clicks on profile
             // Check if token or logged in userid is defined
             if (token === null || isNaN(loggedInUserID)) {
                 window.location.assign("/login")
@@ -557,7 +559,7 @@
                             form.classList.add('was-validated')
                         }, false)
                     })
-                })()
+            })()
         </script>
 
         <!-- Add New Form Submissions -->
@@ -633,8 +635,10 @@
                     flightTimeHours = "0" + flightTimeHours
                 }
 
+                // Convert flight time into 00:00 format
                 var flightTime = `${flightTimeHours}:${flightTimeMinutes}` 
 
+                // Get price of flight
                 const price = $("#flight-price").val()
 
                 const flightImage = document.getElementById("upload-flight-image").files[0]
@@ -643,6 +647,7 @@
                         flightImage = null
                     }
 
+                    // Add new form data to request body
                     var formData = new FormData()
                     formData.append("flightCode", flightCode)
                     formData.append("aircraft", aircraft)

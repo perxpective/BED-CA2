@@ -92,6 +92,7 @@
             </div>
         </nav>
         
+        <!-- Cart Div -->
         <div class="card center scale-up-center fs-5" style="width: 80%; margin-top:230px; transform: scale(1.2);">
             <div class="card-body p-5 tracking-in-expand">
                 <h1 class="card-title">Your Cart <i class="fa-solid fa-cart-arrow-down"></i></h1>
@@ -166,54 +167,54 @@
                     console.log(error)
                 })
 
-                // Function to store clicked flightid into local storage
-                function flightRedirect(flightid) {
-                    window.localStorage.setItem("redirect_flightid", flightid)
-                }
-                
-                // Function to store clicked cart item into local storage
-                function cartItemRedirect(cartid) {
-                    window.localStorage.setItem("cartid", cartid)
-                }
+            // Function to store clicked flightid into local storage
+            function flightRedirect(flightid) {
+                window.localStorage.setItem("redirect_flightid", flightid)
+            }
             
-                // Function to delete cart item when delete icon is clicked
-                function deleteCartItem(flightid) {
-                    let confirmAction = confirm("Are you sure you want to delete this flight?")
-                    if (confirmAction) {
-                        axios.delete(`${baseURL}/cart/${flightid}/${loggedInUserID}`, {
-                            headers: {
-                                "Authorization": "Bearer " + token
-                            }
+            // Function to store clicked cart item into local storage
+            function cartItemRedirect(cartid) {
+                window.localStorage.setItem("cartid", cartid)
+            }
+        
+            // Function to delete cart item when delete icon is clicked
+            function deleteCartItem(flightid) {
+                let confirmAction = confirm("Are you sure you want to delete this flight?")
+                if (confirmAction) {
+                    axios.delete(`${baseURL}/cart/${flightid}/${loggedInUserID}`, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    })
+                        .then((response) => {
+                            alert("Cart Item has been deleted successfully!")
+                            window.location.reload()
                         })
-                            .then((response) => {
-                                alert("Cart Item has been deleted successfully!")
-                                window.location.reload()
-                            })
 
-                            .catch((error) => {
-                                console.log(error)
-                            })
-                    }
-                }
-                
-                function clearEntireCart() {
-                    let confirmAction = confirm("Are you sure you want to clear all items in your cart? This action cannot be reversed!")
-                    if (confirmAction) {
-                        axios.delete(`${baseURL}/cart/`, {
-                            headers: {
-                                "Authorization": "Bearer " + token
-                            }
+                        .catch((error) => {
+                            console.log(error)
                         })
-                            .then((response) => {
-                                alert("Your cart has been cleared!")
-                                window.location.reload()
-                            })
-
-                            .catch((error) => {
-                                console.log(error)
-                            })
-                    }
                 }
+            }
+            
+            function clearEntireCart() {
+                let confirmAction = confirm("Are you sure you want to clear all items in your cart? This action cannot be reversed!")
+                if (confirmAction) {
+                    axios.delete(`${baseURL}/cart/`, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    })
+                        .then((response) => {
+                            alert("Your cart has been cleared!")
+                            window.location.reload()
+                        })
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                }
+            }
         </script>
     </body>
 </html>

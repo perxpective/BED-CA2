@@ -100,6 +100,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Name in Booking</th>
                                 <th>Passport</th>
                                 <th>Nationality</th>
                                 <th>Age</th>
@@ -131,11 +132,12 @@
                 .then((response) => {
                     const bookingList = response.data
                     if (bookingList.length > 0) {
-                        $("#heading").append(`Booking History for ${bookingList[0].name}`)
+                        $("#heading").append("Booking History")
                         bookingList.forEach((booking, index) => {
                             tableRowHTML = `
                             <tr>
                                 <td>${index + 1}</td>
+                                <td>${booking.name}</td>
                                 <td>${booking.passport}</td>
                                 <td>${booking.nationality}</td>
                                 <td>${booking.age}</td>

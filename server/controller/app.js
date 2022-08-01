@@ -72,7 +72,6 @@ app.use(urlencodedParser)   // Parse application/x-www-form-urlencoded
 app.use(cors())             // CORS
 
 const process = require('process')
-const { verify } = require("crypto")
 app.use(express.static(process.cwd() + '/uploads'))
 
 // Endpoint #1: Using the POST method to add a new user to the database
@@ -297,8 +296,10 @@ app.post("/flight/", verifyToken, upload.single("flight_pic_url"), (req, res) =>
     }
 })
 
-// [MODIFIED] Endpoint #8: Using the GET method to retrieve flight information travelling from origin to destination airport
+
 /*
+    [MODIFIED] Endpoint #8: Using the GET method to retrieve flight information travelling from origin to destination airport
+
     Modified the endpoint to run two functions in the endpoint
     - Runs searchFlightsByPriceRange function if there are queries for min and max price ranges
     - Acts as filter before running the findFlight function to search the filtered flights by origin and destination airports
@@ -366,24 +367,33 @@ app.post("/booking/:userid/:flightid", verifyToken, (req, res) => {
     var userid = req.params.userid
     var flightid = req.params.flightid
 
-    // Get booking information from request body data 
-    var name = req.body.name
-    var passport = req.body.passport
-    var nationality = req.body.nationality
-    var age = req.body.age
-
-    booking.newBooking(name, passport, nationality, age, userid, flightid, (err, result) => {
-        if (!err) {
-            console.log("Booked a flight!")
-            res.status(201).send({bookingId: `${result.insertId}`})
-        } else if (err.errno == 1452) {
-            console.log("Foreign Key Contraint Failed!")
-            res.status(500).send({ "Error Message": "Flight ID, Name or user ID does not exist in the database!" })
-        } else {
-            console.log("[ERROR DETECTED]")
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Get booking information from request body data 
+        var name = req.body.name
+        var passport = req.body.passport
+        var nationality = req.body.nationality
+        var age = req.body.age
+    
+        booking.newBooking(name, passport, nationality, age, userid, flightid, (err, result) => {
+            if (!err) {
+                console.log("Booked a flight!")
+                res.status(201).send({bookingId: `${result.insertId}`})
+            } else if (err.errno == 1452) {
+                console.log("Foreign Key Contraint Failed!")
+                res.status(500).send({ "Error Message": "Flight ID, Name or user ID does not exist in the database!" })
+            } else {
+                console.log("[ERROR DETECTED]")
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint #10: Using the DELETE method to delete flights and associated bookings by flightid
@@ -589,18 +599,23 @@ app.get("/flight", (req, res) => {
 })
 
 // Endpoint to delete selected airport by airportid
-app.delete("/airport/:airportid", (req, res) => {
-    // Get airportid from request parameters
-    var airportid = req.params.airportid
-
-    // Perform function to delete airport by airportid
-    airport.deleteAirport(airportid, (err, result) => {
-        if (!err) {
-            res.status(200).send(result)
-        } else {
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+app.delete("/airport/:airportid", verifyToken, (req, res) => {
+    // Check for admin privileges
+    if (req.decodedToken.role !== "Administrator") {
+        res.status(401).send({ "Message": "Unauthorized!" })
+    } else {
+        // Get airportid from request parameters
+        var airportid = req.params.airportid
+    
+        // Perform function to delete airport by airportid
+        airport.deleteAirport(airportid, (err, result) => {
+            if (!err) {
+                res.status(200).send(result)
+            } else {
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to get return flights
@@ -720,41 +735,57 @@ app.post("/cart/:flightid/:userid", verifyToken, (req, res) => {
     var flightid = req.params.flightid
     var userid = req.params.userid
 
-    // Get request body
-    var seatPrice  = req.body.seatPrice
-    var quantity = req.body.quantity
-    var discount = req.body.discount
-
-    // Run function to add flight data to cart
-    cart.addFlightToCart(userid, flightid, seatPrice, quantity, discount, (err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else if (err.errno === 1062) {
-            res.status(422).send({ "Error Message":"[422] Unprocessable Entity (Duplicated Entry Detected)" })
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Get request body
+        var seatPrice  = req.body.seatPrice
+        var quantity = req.body.quantity
+        var discount = req.body.discount
     
+        // Run function to add flight data to cart
+        cart.addFlightToCart(userid, flightid, seatPrice, quantity, discount, (err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else if (err.errno === 1062) {
+                res.status(422).send({ "Error Message":"[422] Unprocessable Entity (Duplicated Entry Detected)" })
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to get cart information from cart database
 app.get("/cart/:userid", verifyToken, (req, res) => {
     // Get userid parameters
     var userid = req.params.userid
-
-    // Perform function to get cart information
-    cart.getCartInformation(userid, (err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Perform function to get cart information
+        cart.getCartInformation(userid, (err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to delete cart item by the flightid from cart database
@@ -762,35 +793,48 @@ app.delete("/cart/:flightid/:userid", verifyToken, (req, res) => {
     // Get flightid and userid parameters
     var flightid = req.params.flightid
     var userid = req.params.userid
-
-    // Perform function to get cart information
-    cart.deleteCartItemByFlightId(flightid, userid, (err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Perform function to get cart information
+        cart.deleteCartItemByFlightId(flightid, userid, (err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to clear cart
 app.delete("/cart", verifyToken, (req, res) => {
-    // Perform function to clear cart
-    cart.clearCart((err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Check for admin privileges
+    if (req.decodedToken.role !== "Administrator") {
+        res.status(401).send({ "Message": "Unauthorized!" })
+    } else {
+        // Perform function to clear cart
+        cart.clearCart((err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to get cart item by cartid
-app.get("/checkoutCart/:cartid", verifyToken, (req, res) => {
+app.get("/checkoutCart/:cartid", (req, res) => {
     // Get cartid parameters
     var cartid = req.params.cartid
 
@@ -875,48 +919,67 @@ app.get("/promotions/search", (req, res) => {
 })
 
 // Endpoint to get booking history by userid
-app.get("/booking/:userid", (req, res) => {
+app.get("/booking/:userid", verifyToken, (req, res) => {
     // Get userid paramters
     var userid = req.params.userid
 
-    // Function to get booking information from booking database by userid
-    booking.getBookingByUserId(userid, (err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Function to get booking information from booking database by userid
+        booking.getBookingByUserId(userid, (err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to get all booking data from booking table
 app.get("/booking", verifyToken, (req, res) => {
-    // Function to get all booking information from the booking table
-    booking.getAllBooking((err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Check for admin privileges
+    if (req.decodedToken.role !== "Administrator") {
+        res.status(401).send({ "Message": "Unauthorized!" })
+    } else {
+        // Function to get all booking information from the booking table
+        booking.getAllBooking((err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to clear booking history
 app.delete("/booking", verifyToken, (req, res) => {
-    // Function to clear all booking history from booking database
-    booking.clearAllBooking((err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Check for admin privileges
+    if (req.decodedToken.role !== "Administrator") {
+        res.status(401).send({ "Message": "Unauthorized!" })
+    } else {
+        // Function to clear all booking history from booking database
+        booking.clearAllBooking((err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 // Endpoint to clear booking history by userid
@@ -924,16 +987,25 @@ app.delete("/booking/:userid", verifyToken, (req, res) => {
     // Get userid paramters
     var userid = req.params.userid
 
-    // Function to clear booking history according to userid
-    booking.clearBookingById(userid, (err, result) => {
-        if (!err) {
-            console.log(result)
-            res.status(200).send(result)
-        } else {
-            console.log(err)
-            res.status(500).send({ "Error Message": "[500] Unknown Error" })
-        }
-    })
+    // Verify userid before booking
+    if (isNaN(userid) || userid === undefined) {
+        res.status(400).send({"Message":"Bad Request Error"})
+    } else if (userid != req.decodedToken.userid) {
+        console.log(userid)
+        console.log(req.decodedToken)
+        res.status(401).send({"Message":"Unauthorized!"})
+    } else {
+        // Function to clear booking history according to userid
+        booking.clearBookingById(userid, (err, result) => {
+            if (!err) {
+                console.log(result)
+                res.status(200).send(result)
+            } else {
+                console.log(err)
+                res.status(500).send({ "Error Message": "[500] Unknown Error" })
+            }
+        })
+    }
 })
 
 /*

@@ -168,10 +168,10 @@ Database name: sp_air
 - signup.html
 - transfers.html
 
-## Updates to Basic Requirement Fufillment (Additional Endpoints)
+## Updates to Basic Requirement Fulfillment (Additional Endpoints)
 Added the following additional endpoints to enable maximum functionality of the website:
 
-## Basic Requirements Fufillment
+## Basic Requirements Fulfillment
 - Persistent login (Storing of JWT Token and User ID on Local Storage)
 - Page with search form for users to search flights by origin and destination locations and departure and return dates
 - Search results from search form inputs
@@ -183,7 +183,7 @@ Added the following additional endpoints to enable maximum functionality of the 
   - Add New Airport option 
     - Alert message shown if duplicate entry detected
 
-## Bonus Features Fufillment
+## Bonus Features Fulfillment
 - Uploading of actual image for aircraft seats when creating new flights
 - Add and search for promotions for flights
 - Shopping cart functionality to book flights and confirm payment details and check out data saved to database using local storage

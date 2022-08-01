@@ -157,6 +157,24 @@
         <section id="search-results">
         </section>
 
+        <!-- Form Validation -->
+        <script>
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+        </script>
+
         <!-- Function to redirect user to flight page with flightid local storage -->
         <script>
             function flightRedirect(flightid) {

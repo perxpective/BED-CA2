@@ -12,7 +12,9 @@ Tables to add in SP AIR Database
 - user 
 - flight
 - airport
-- bookings 
+- booking
+- promotion
+- cart
 */
 
 /*

@@ -162,6 +162,7 @@ app.put("/users/:id", verifyToken, upload.single('profile_pic_url'), (req, res) 
     var username = req.body.username
     var email = req.body.email  
     var contact = req.body.contact
+    var password = req.body.password
     var profilePic = req.body.profile_pic_url
 
     // Check userid to ensure user is only updating their own account
@@ -190,7 +191,7 @@ app.put("/users/:id", verifyToken, upload.single('profile_pic_url'), (req, res) 
         }
     
         // Initiate function to update user by userid
-        user.updateUser(userid, username, email, contact, profile_pic_url, (err, result) => {
+        user.updateUser(userid, username, email, contact, password, profile_pic_url, (err, result) => {
             // Check for errors
             if (!err) {
                 res.status(204).send(result)

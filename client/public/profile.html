@@ -139,7 +139,7 @@
                             <input class="form-control form-control-sm" id="upload-profile-pic" type="file" accpet="image/*"
                                 onchange="imagePreview(this)">
                         </div>
-                        <form id="edit-profile-form" class="needs-validation" novalidate>
+                        <form id="edit-profile-form" style="width:50%; display:block; margin:0px auto;" class="needs-validation" novalidate>
                             <div class="mb-3">
                                 <div class="invalid-feedback">
                                     Please enter this field!
@@ -158,6 +158,14 @@
                                 </div>
                                 <label id="change-contact" for="change-contact" class="col-form-label">Change Contact
                                     Number:</label>
+                            </div>
+                            <div class="mb-3">
+                                <label id="change-password" for="change-password" class="col-form-label">Change Password</label>
+                                <input type="password" class="form-control" id="new-password" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label id="confirm-new-password" for="confirm-new-password" class="col-form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirm-password" value="">
                             </div>
                             <div>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
@@ -295,79 +303,88 @@
                 const newEmail = $("#new-email").val()
                 const newUsername = $("#new-username").val()
                 const newContact = $("#new-contact").val()
-
-                // Get new profile picture
-                const newProfilePic = document.getElementById("upload-profile-pic").files[0]
-
-                // Axios GET request to obtain information about logged in user
-                axios.get(`${baseURL}/users/${loggedInUserID}`, { 
-                    headers: { 
-                        "Authorization": "Bearer " + token 
-                    } 
-                })
-                    .then((response) => {
-                        // Get user information
-                        const user2 = response.data[0]
-                        currentProfilePic = user2.profile_pic_url
-                        if (newEmail === '') {
-                            alert("Please fill in the email field!")
-                        } else {
-                            user2.email = newEmail
-                            if (newUsername === '') {
-                                alert("Please fill in the username field!")
+                const newPassword = $("#new-password").val()
+                const confirmPassword = $("#confirm-password").val()
+                console.log(newPassword)
+                console.log(confirmPassword)
+                // Password Validation
+                if (newPassword !== confirmPassword) {
+                    alert("Passwords do not match!")
+                } else {
+                    // Get new profile picture
+                    const newProfilePic = document.getElementById("upload-profile-pic").files[0]
+    
+                    // Axios GET request to obtain information about logged in user
+                    axios.get(`${baseURL}/users/${loggedInUserID}`, { 
+                        headers: { 
+                            "Authorization": "Bearer " + token 
+                        } 
+                    })
+                        .then((response) => {
+                            // Get user information
+                            const user2 = response.data[0]
+                            user2.password = newPassword
+                            currentProfilePic = user2.profile_pic_url
+                            if (newEmail === '') {
+                                alert("Please fill in the email field!")
                             } else {
-                                user2.username = newUsername
-                                if (newContact === '') {
-                                    alert("Please fill in the contact field!")
+                                user2.email = newEmail
+                                if (newUsername === '') {
+                                    alert("Please fill in the username field!")
                                 } else {
-                                    user2.contact = newContact
-                                    // If profile pic input is not undefined, use new profile pic
-                                    // If not, retain the current profile picture
-                                    if (newProfilePic !== undefined) {
-                                        user2.profile_pic_url = newProfilePic
+                                    user2.username = newUsername
+                                    if (newContact === '') {
+                                        alert("Please fill in the contact field!")
                                     } else {
-                                        user2.profile_pic_url = currentProfilePic
-                                    }
-                                    // Check if file uploaded is an image
-                                    var imageFormatList = ["image/png", "image/jpg", "image/jpeg"]
-                                    if (user2.profile_pic_url === newProfilePic) {
-                                        if (!(imageFormatList.includes(user2.profile_pic_url.type))) {
-                                            alert("Only upload image formats for profile picture (jpeg, png, jpeg)")
+                                        user2.contact = newContact
+                                        // If profile pic input is not undefined, use new profile pic
+                                        // If not, retain the current profile picture
+                                        if (newProfilePic !== undefined) {
+                                            user2.profile_pic_url = newProfilePic
+                                        } else {
+                                            user2.profile_pic_url = currentProfilePic
                                         }
-                                    }
-
-                                    // Compile form data to be sent to backend server
-                                    var formData = new FormData()
-                                    formData.append("username", user2.username)
-                                    formData.append("email", user2.email)
-                                    formData.append("contact", user2.contact)
-                                    formData.append("profile_pic_url", user2.profile_pic_url)
-
-                                    // Axios PUT method to update user information to the user database
-                                    axios.put(`${baseURL}/users/${user2.userid}`, formData, {
-                                        headers: {
-                                            "Content-Type": "multipart/form-data",
-                                            "Authorization": "Bearer " + token
+                                        // Check if file uploaded is an image
+                                        var imageFormatList = ["image/png", "image/jpg", "image/jpeg"]
+                                        if (user2.profile_pic_url === newProfilePic) {
+                                            if (!(imageFormatList.includes(user2.profile_pic_url.type))) {
+                                                alert("Only upload image formats for profile picture (jpeg, png, jpeg)")
+                                            }
                                         }
-                                    })
-                                        .then((response) => {
-                                            window.location.reload()
-                                        })
-
-                                        .catch((error) => {
-                                            if (error.response.status === 422) {
-                                                alert("Username or email already exists!")
+    
+                                        // Compile form data to be sent to backend server
+                                        var formData = new FormData()
+                                        formData.append("username", user2.username)
+                                        formData.append("email", user2.email)
+                                        formData.append("contact", user2.contact)
+                                        formData.append("password", user2.password)
+                                        formData.append("profile_pic_url", user2.profile_pic_url)
+    
+                                        // Axios PUT method to update user information to the user database
+                                        axios.put(`${baseURL}/users/${user2.userid}`, formData, {
+                                            headers: {
+                                                "Content-Type": "multipart/form-data",
+                                                "Authorization": "Bearer " + token
                                             }
                                         })
-                                    
+                                            .then((response) => {
+                                                window.location.reload()
+                                            })
+    
+                                            .catch((error) => {
+                                                if (error.response.status === 422) {
+                                                    alert("Username or email already exists!")
+                                                }
+                                            })
+                                    }
                                 }
                             }
-                        }
-                    })
-
-                    .catch((error) => {
-                        console.log(error)
-                    })
+                        })
+    
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                }
             })
         </script>
     </body>

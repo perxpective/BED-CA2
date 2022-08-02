@@ -12,7 +12,6 @@ BED Assignment CA2
 IMPORT DATABASE CONFIGURATIONS
 -----------------------------------------------------------------------
 */
-const { resourceLimits } = require('worker_threads')
 var db = require('./databaseConfig.js')
 
 /*
@@ -140,25 +139,40 @@ var userDB = {
     },
 
     // Function to update user by userid
-    updateUser: (userid, username, email, contact, profile_pic_url, callback) => {
+    updateUser: (userid, username, email, contact, password, profile_pic_url, callback) => {
         var connection = db.getConnection()
         connection.connect((err) => {
             if (err) {
                 console.log(err)
                 return callback(err, null)
             } else {
-                // SQL query to update users by userid
-                var sql = "update user set username = ?, email = ?, contact = ?, profile_pic_url = ? where userid = ?"
-                connection.query(sql, [username, email, contact, profile_pic_url, userid], (err, result) => {
-                    if (err) {
-                        console.log(err)
-                        return callback(err, null)
-                    } else {
-                        console.log(result)
-                        console.table(result)
-                        return callback(null, result)
-                    }
-                })
+                if (password !== "") {
+                    // SQL query to update users by userid
+                    var sql = "update user set username = ?, email = ?, contact = ?, password = ?, profile_pic_url = ? where userid = ?"
+                    connection.query(sql, [username, email, contact, password, profile_pic_url, userid], (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            return callback(err, null)
+                        } else {
+                            console.log(result)
+                            console.table(result)
+                            return callback(null, result)
+                        }
+                    })
+                } else {
+                   // SQL query to update users by userid
+                    var sql = "update user set username = ?, email = ?, contact = ?, profile_pic_url = ? where userid = ?"
+                    connection.query(sql, [username, email, contact, profile_pic_url, userid], (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            return callback(err, null)
+                        } else {
+                            console.log(result)
+                            console.table(result)
+                            return callback(null, result)
+                        }
+                    })
+                }
             }
         })
     }

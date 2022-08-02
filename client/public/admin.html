@@ -578,7 +578,7 @@
                 const airportDescription = $("#airport-description").val()
                 const airportIata = $("#airport-iata").val()
 
-                if (airportName !== '' || airportCountry !== '' || airportDescription !== '' || airportIata !== '') {
+                if (airportName !== '' && airportCountry !== '' && airportDescription !== '' && airportIata !== '') {
                     const requestBody = {
                         name: airportName,
                         country: airportCountry,
@@ -731,7 +731,11 @@
                 const airportid = $("#airport-options-3").val()
                 
                 // Axios DELETE method to delete airprot by airportid
-                axios.delete(`${baseURL}/airport/${airportid}`)
+                axios.delete(`${baseURL}/airport/${airportid}`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
                     .then((response) => {
                         window.location.reload()
                     })

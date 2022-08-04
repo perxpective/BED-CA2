@@ -269,13 +269,13 @@
 
                     // Pre-fill exisitng information in Edit Profile modal
                     $("#change-username").append(`
-                    <input type="text" class="form-control" id="new-username" value=${user.username} required>
-                    `)
+                    <input type="text" class="form-control" id="new-username" value=${user.username} pattern="" required>
+                    `)  
                     $("#change-email").append(`
                     <input type="email" class="form-control" id="new-email" value=${user.email} required>
                     `)
                     $("#change-contact").append(`
-                    <input type="tel" class="form-control" id="new-contact" value=${user.contact} required>
+                    <input minlength="8" maxlength="8" type="tel" class="form-control" id="new-contact" value=${user.contact} required>
                     `)
 
                     // Append the administrative panel button if user role is admin
@@ -305,8 +305,7 @@
                 const newContact = $("#new-contact").val()
                 const newPassword = $("#new-password").val()
                 const confirmPassword = $("#confirm-password").val()
-                console.log(newPassword)
-                console.log(confirmPassword)
+
                 // Password Validation
                 if (newPassword !== confirmPassword) {
                     alert("Passwords do not match!")
@@ -325,16 +324,16 @@
                             const user2 = response.data[0]
                             user2.password = newPassword
                             currentProfilePic = user2.profile_pic_url
-                            if (newEmail === '') {
-                                alert("Please fill in the email field!")
+                            if (newEmail === '' || !(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(newEmail))) {
+                                alert("Invalid email input!")
                             } else {
                                 user2.email = newEmail
                                 if (newUsername === '') {
-                                    alert("Please fill in the username field!")
+                                    alert("Invalid username input!")
                                 } else {
                                     user2.username = newUsername
-                                    if (newContact === '') {
-                                        alert("Please fill in the contact field!")
+                                    if (newContact === '' || newContact.length !== 8) {
+                                        alert("Invalid contact number input!")
                                     } else {
                                         user2.contact = newContact
                                         // If profile pic input is not undefined, use new profile pic

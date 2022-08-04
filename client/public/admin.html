@@ -977,24 +977,6 @@
                             `
                             $("#promotion-flight").append(optionsHTML)
                             $("#flight-options").append(optionsHTML)
-                            
-                            // Axios GET method to get promotion options
-                            axios.get(`${baseURL}/promotion`)
-                                .then((response) => {
-                                    const promotionList = response.data
-                                    if (promotionList.length > 0) {
-                                        promotionList.forEach((promotion, index) => {
-                                            optionsHTML = `
-                                            <option value="${promotion.promotionid}">Promotion for ${promotion.flight} (${flight.originAirportIata} - ${flight.destinationAirportIata})<br>${promotion.startDate} to ${promotion.endDate}<br>${promotion.discount}% off!</option>
-                                            `
-                                            $("#promotion-options").append(optionsHTML)
-                                        })
-                                    }
-                                })
-    
-                                .catch((error) => {
-                                    console.log(error)
-                                })
                         })
                     }
                 })
@@ -1002,6 +984,25 @@
                 .catch((error) => {
                     console.log(error.response.data)
                 })
+
+            // Axios GET method to get promotion options
+            axios.get(`${baseURL}/promotion`)
+                .then((response) => {
+                    const promotionList = response.data
+                    if (promotionList.length > 0) {
+                        promotionList.forEach((promotion, index) => {
+                            optionsHTML = `
+                            <option value="${promotion.promotionid}">Promotion for ${promotion.flight} (${promotion.startDate} to ${promotion.endDate}) [${promotion.discount*100}% off!]</option>
+                            `
+                            $("#promotion-options").append(optionsHTML)
+                        })
+                    }
+                })
+
+                .catch((error) => {
+                    console.log(error)
+                })
+
         </script>
     </body>
 </html>

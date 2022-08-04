@@ -217,6 +217,8 @@
                     alert("Origin and Destination cannot be the same place!")
                 } if (minPrice > maxPrice && minPrice !== '' && maxPrice !== '') {
                     alert("Minimum Price cannot be more than maximum price!")
+                } if (minPrice < 0 || maxPrice > 0) {
+                    alert("Prices cannot be less than 0!")
                 }
                 
                 if (embarkDate !== '') {

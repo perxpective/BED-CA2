@@ -622,11 +622,6 @@
                 var flightTimeMinutes = $("#flight-time-minutes").val()
                 var embarkDate2 = new Date(embarkDate)
 
-                // Validate dates to ensure cannot create new flight before today's date
-                if (embarkDate2 < dateToday) {
-                    alert("You cannot create a new flight before today!")
-                }
-
                 // Append 0 to single digit minutes
                 if (flightTimeMinutes < 10) {
                     flightTimeMinutes = "0" + flightTimeMinutes

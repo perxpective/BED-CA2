@@ -275,7 +275,7 @@
                     <input type="email" class="form-control" id="new-email" value=${user.email} required>
                     `)
                     $("#change-contact").append(`
-                    <input minlength="8" maxlength="8" type="tel" class="form-control" id="new-contact" value=${user.contact} required>
+                    <input pattern="[8,9][\\d][\\d][\\d][\\d][\\d][\\d][\\d]" type="tel" class="form-control" id="new-contact" value=${user.contact} required>
                     `)
 
                     // Append the administrative panel button if user role is admin

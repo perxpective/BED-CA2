@@ -338,15 +338,15 @@
                                         </label>
                                     `
                                     const businessClassHTML = `
-                                    <h1 class="card-title pricing-card-title">$${flightData.price*1.5}</h1>
+                                    <h1 class="card-title pricing-card-title">$${(flightData.price*1.5).toFixed(2)}</h1>
                                     <div class="form-check text-start">
-                                        <input class="form-check-input" type="radio" name="seat-class" id="business" value=${flightData.price*1.5} required>
+                                        <input class="form-check-input" type="radio" name="seat-class" id="business" value=${(flightData.price*1.5).toFixed(2)} required>
                                         <label class="form-check-label" for="business">
                                             Select Business Class Option
                                         </label>
                                     `
                                     const firstClassHTML = `
-                                    <h1 class="card-title pricing-card-title">$${flightData.price*2}</h1>
+                                    <h1 class="card-title pricing-card-title">$${(flightData.price*2).toFixed(2)}</h1>
                                     <div class="form-check text-start">
                                         <input class="form-check-input" type="radio" name="seat-class" id="first" value=${flightData.price*2} required>
                                         <label class="form-check-label" for="first">

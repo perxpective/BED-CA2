@@ -212,218 +212,234 @@
                 const minPrice = $("#minimum-price").val()
                 const maxPrice = $("#maximum-price").val()
 
+                var check = null
+
                 // Validate airport and date option inputs
                 if (originAirport === destinationAirport && originAirport !== '' && destinationAirport !== '') {
+                    console.log("statement 1 activated")
+                    check = false
                     alert("Origin and Destination cannot be the same place!")
-                } if (minPrice > maxPrice && minPrice !== '' && maxPrice !== '') {
+
+                } else if (minPrice > maxPrice && minPrice !== '' && maxPrice !== '') {
+                    console.log("statement 2 activated")
+                    check = false
                     alert("Minimum Price cannot be more than maximum price!")
-                } if (minPrice < 0 || maxPrice > 0) {
+                } else if (minPrice < 0 || maxPrice < 0) {
+                    console.log("statement 3 activated")
+                    check = false
                     alert("Prices cannot be less than 0!")
+                } else {
+                    console.log("statement 4 activated")
+                    check = true
                 }
-                
-                if (embarkDate !== '') {
-                    // Axios GET Method to get search flight results
-                    axios.get(`${baseURL}/flightDirect/${originAirport}/${destinationAirport}?embarkDate=${embarkDate}&min=${minPrice}&max=${maxPrice}`)
-                        .then((response) => {
-                            flightList = response.data
-                            if (flightList.length > 0) {
-                                // Append Search Flight Results 
-                                resultsHTML = `
-                                <div class="container pt-5">
-                                    <h1>Search Flight Results</h1>
-                                    <hr>
-                                    <p class="fs-6">Note: All arrival times follow same timezone as origin country</p>
-                                </div>
-                                `
-                                $("#search-results").append(resultsHTML)
 
-                                flightList.forEach((flight, index) => {
-                                    var travelTimeList = flight.travelTime.split(":")
-                                    // Get duration string
-                                    var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
-                                    // Flight embark date
-                                    var date = flight.embarkDate.split(" ")[0]
-                                    // Flight embark time
-                                    var time = flight.embarkDate.split(" ")[1]
-                                    // Convert them into lists
-                                    var dateList = date.split("-")
-                                    var timeList = time.split(":")
-                                    // Convert datelist into date string for embark date
-                                    var date = dateToString(dateList)
-                                    // Get start flight time (excluding seconds)
-                                    var startTime = timeList.slice(0,-1).join(":")
-                                    // Get end flight local time
-                                    var hoursPassed = parseInt(travelTimeList[0])
-                                    var minutesPassed = parseInt(travelTimeList[1])
-                                    var endHour = parseInt(timeList[0]) + hoursPassed
+                console.log(check)
 
-                                    if (endHour > 23) {
-                                        endHour -= 24
-                                    }
-                                    var endMinute = parseInt(timeList[1]) + minutesPassed
-                                    if (endMinute >= 60) {
-                                        endHour += 1
-                                        endMinute -= 60
-                                    } if (endMinute < 10) {
-                                        endMinute = "0" + endMinute
-                                    } if (endHour < 10) {
-                                        endHour = "0" + endHour
-                                    }
-                                    var endTime = [endHour, endMinute].join(":")
-                                    
-
-                                    searchResultsHTML = `
-                                    <div class="container py-1" id="flight-search-results-${index+1}">
-                                        <div class="container py-3 slide-in-right">
-                                            <div class="row d-flex justify-content-center align-items-center h-100 p-3">
-                                                <div class="col">
-                                                    <div class="card mb-3">
-                                                        <h4 class="card-header">Non-Stop</h4>
-                                                        <div class="row d-flex justify-content-center align-items-center h-100 p-3">
-                                                            <div class="col-md-2">
-                                                                <div class="card-body card-body p-lg-2 p-xs-0">
-                                                                    <h1 class="card-title">${flight.flightCode}</h1>
-                                                                    <p class="card-text">Departure on ${date}</p>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-7 text-center">
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <h2>${startTime} ${flight.originAirportIata}</h2>
-                                                                        <p class="card-subtitle">${flight.originAirport}</p>
-                                                                    </div>
-                                                                    <div class="col">
-                                                                        <h2>&#9992</h2>
-                                                                        ${duration}
-                                                                    </div>
-                                                                    <div class="col">
-                                                                        <h2>${endTime} ${flight.destinationAirportIata}</h2>
-                                                                        <p class="card-subtitle">${flight.destinationAirport}</p>
+                if (check === true) {                    
+                    if (embarkDate !== '') {
+                        // Axios GET Method to get search flight results
+                        axios.get(`${baseURL}/flightDirect/${originAirport}/${destinationAirport}?embarkDate=${embarkDate}&min=${minPrice}&max=${maxPrice}`)
+                            .then((response) => {
+                                flightList = response.data
+                                if (flightList.length > 0) {
+                                    // Append Search Flight Results 
+                                    resultsHTML = `
+                                    <div class="container pt-5">
+                                        <h1>Search Flight Results</h1>
+                                        <hr>
+                                        <p class="fs-6">Note: All arrival times follow same timezone as origin country</p>
+                                    </div>
+                                    `
+                                    $("#search-results").append(resultsHTML)
+    
+                                    flightList.forEach((flight, index) => {
+                                        var travelTimeList = flight.travelTime.split(":")
+                                        // Get duration string
+                                        var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
+                                        // Flight embark date
+                                        var date = flight.embarkDate.split(" ")[0]
+                                        // Flight embark time
+                                        var time = flight.embarkDate.split(" ")[1]
+                                        // Convert them into lists
+                                        var dateList = date.split("-")
+                                        var timeList = time.split(":")
+                                        // Convert datelist into date string for embark date
+                                        var date = dateToString(dateList)
+                                        // Get start flight time (excluding seconds)
+                                        var startTime = timeList.slice(0,-1).join(":")
+                                        // Get end flight local time
+                                        var hoursPassed = parseInt(travelTimeList[0])
+                                        var minutesPassed = parseInt(travelTimeList[1])
+                                        var endHour = parseInt(timeList[0]) + hoursPassed
+    
+                                        if (endHour > 23) {
+                                            endHour -= 24
+                                        }
+                                        var endMinute = parseInt(timeList[1]) + minutesPassed
+                                        if (endMinute >= 60) {
+                                            endHour += 1
+                                            endMinute -= 60
+                                        } if (endMinute < 10) {
+                                            endMinute = "0" + endMinute
+                                        } if (endHour < 10) {
+                                            endHour = "0" + endHour
+                                        }
+                                        var endTime = [endHour, endMinute].join(":")
+                                        
+    
+                                        searchResultsHTML = `
+                                        <div class="container py-1" id="flight-search-results-${index+1}">
+                                            <div class="container py-3 slide-in-right">
+                                                <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                                    <div class="col">
+                                                        <div class="card mb-3">
+                                                            <h4 class="card-header">Non-Stop</h4>
+                                                            <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                                                <div class="col-md-2">
+                                                                    <div class="card-body card-body p-lg-2 p-xs-0">
+                                                                        <h1 class="card-title">${flight.flightCode}</h1>
+                                                                        <p class="card-text">Departure on ${date}</p>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-        
-                                                            <div class="col-md-3 text-center">
-                                                                <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
-                                                                <h3>$${(flight.price).toFixed(2)}</h3>
-                                                                <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+    
+                                                                <div class="col-md-7 text-center">
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <h2>${startTime} ${flight.originAirportIata}</h2>
+                                                                            <p class="card-subtitle">${flight.originAirport}</p>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <h2>&#9992</h2>
+                                                                            ${duration}
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <h2>${endTime} ${flight.destinationAirportIata}</h2>
+                                                                            <p class="card-subtitle">${flight.destinationAirport}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+            
+                                                                <div class="col-md-3 text-center">
+                                                                    <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
+                                                                    <h3>$${(flight.price).toFixed(2)}</h3>
+                                                                    <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    `
-                                    // Append the flight results
-                                    $("#search-results").append(searchResultsHTML)
-
-                                    // If return date is specified
-                                    if (returnDate !== '') {
-                                        // Axios GET method to retrieve two-way flights
-                                        axios.get(`${baseURL}/returnFlights/${originAirport}/${destinationAirport}?returnDate=${returnDate}&min=${minPrice}&max=${maxPrice}`)
-                                            .then((response) => {
-                                                const flightList2 = response.data
-                                                if (flightList2.length > 0) {
-                                                    flightList2.forEach((flight, index) => {
-                                                        var travelTimeList = flight.travelTime.split(":")
-                                                        // Get duration string
-                                                        var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
-                                                        // Flight embark date
-                                                        var date = flight.embarkDate.split(" ")[0]
-                                                        // Flight embark time
-                                                        var time = flight.embarkDate.split(" ")[1]
-                                                        // Convert them into lists
-                                                        var dateList = date.split("-")
-                                                        var timeList = time.split(":")
-                                                        // Convert datelist into date string for embark date
-                                                        var date = dateToString(dateList)
-                                                        // Get start flight time (excluding seconds)
-                                                        var startTime = timeList.slice(0, -1).join(":")
-                                                        // Get end flight local time
-                                                        var hoursPassed = parseInt(travelTimeList[0])
-                                                        var minutesPassed = parseInt(travelTimeList[1])
-                                                        var endHour = parseInt(timeList[0]) + hoursPassed
-                                                        if (endHour > 23) {
-                                                            endHour -= 24
-                                                        } 
-
-                                                        var endMinute = parseInt(timeList[1]) + minutesPassed
-                                                        if (endMinute >= 60) {
-                                                            endHour += 1
-                                                            endMinute -= 60
-                                                        } if (endMinute < 10) {
-                                                            endMinute = "0" + endMinute
-                                                        } if (endHour < 10) {
-                                                            endHour = "0" + endHour
-                                                        }
-                                                        var endTime = [endHour, endMinute].join(":")
-                                                        searchResultsHTML = `
-                                                        <div class="container py-1" id="flight-search-results-${index+1}">
-                                                            <div class="container py-3 slide-in-right">
-                                                                <div class="row d-flex justify-content-center align-items-center h-100 p-3">
-                                                                    <div class="col">
-                                                                        <div class="card mb-3">
-                                                                            <h4 class="card-header">Returning</h4>
-                                                                            <div class="row d-flex justify-content-center align-items-center h-100 p-3">
-                                                                                <div class="col-md-2">
-                                                                                    <div class="card-body card-body p-lg-2 p-xs-0">
-                                                                                        <h1 class="card-title">${flight.flightCode}</h1>
-                                                                                        <p class="card-text">Departure on ${date}</p>
-                                                                                    </div>
-                                                                                </div>
-                            
-                                                                                <div class="col-md-7 text-center">
-                                                                                    <div class="row">
-                                                                                        <div class="col">
-                                                                                            <h2>${startTime} ${flight.originAirportIata}</h2>
-                                                                                            <p class="card-subtitle">${flight.originAirport}</p>
-                                                                                        </div>
-                                                                                        <div class="col">
-                                                                                            <h2>&#9992</h2>
-                                                                                            ${duration}
-                                                                                        </div>
-                                                                                        <div class="col">
-                                                                                            <h2>${endTime} ${flight.destinationAirportIata}</h2>
-                                                                                            <p class="card-subtitle">${flight.destinationAirport}</p>
+                                        `
+                                        // Append the flight results
+                                        $("#search-results").append(searchResultsHTML)
+    
+                                        // If return date is specified
+                                        if (returnDate !== '') {
+                                            // Axios GET method to retrieve two-way flights
+                                            axios.get(`${baseURL}/returnFlights/${originAirport}/${destinationAirport}?returnDate=${returnDate}&min=${minPrice}&max=${maxPrice}`)
+                                                .then((response) => {
+                                                    const flightList2 = response.data
+                                                    if (flightList2.length > 0) {
+                                                        flightList2.forEach((flight, index) => {
+                                                            var travelTimeList = flight.travelTime.split(":")
+                                                            // Get duration string
+                                                            var duration = `${travelTimeList[0]} hours ${travelTimeList[1]} mins`
+                                                            // Flight embark date
+                                                            var date = flight.embarkDate.split(" ")[0]
+                                                            // Flight embark time
+                                                            var time = flight.embarkDate.split(" ")[1]
+                                                            // Convert them into lists
+                                                            var dateList = date.split("-")
+                                                            var timeList = time.split(":")
+                                                            // Convert datelist into date string for embark date
+                                                            var date = dateToString(dateList)
+                                                            // Get start flight time (excluding seconds)
+                                                            var startTime = timeList.slice(0, -1).join(":")
+                                                            // Get end flight local time
+                                                            var hoursPassed = parseInt(travelTimeList[0])
+                                                            var minutesPassed = parseInt(travelTimeList[1])
+                                                            var endHour = parseInt(timeList[0]) + hoursPassed
+                                                            if (endHour > 23) {
+                                                                endHour -= 24
+                                                            } 
+    
+                                                            var endMinute = parseInt(timeList[1]) + minutesPassed
+                                                            if (endMinute >= 60) {
+                                                                endHour += 1
+                                                                endMinute -= 60
+                                                            } if (endMinute < 10) {
+                                                                endMinute = "0" + endMinute
+                                                            } if (endHour < 10) {
+                                                                endHour = "0" + endHour
+                                                            }
+                                                            var endTime = [endHour, endMinute].join(":")
+                                                            searchResultsHTML = `
+                                                            <div class="container py-1" id="flight-search-results-${index+1}">
+                                                                <div class="container py-3 slide-in-right">
+                                                                    <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                                                        <div class="col">
+                                                                            <div class="card mb-3">
+                                                                                <h4 class="card-header">Returning</h4>
+                                                                                <div class="row d-flex justify-content-center align-items-center h-100 p-3">
+                                                                                    <div class="col-md-2">
+                                                                                        <div class="card-body card-body p-lg-2 p-xs-0">
+                                                                                            <h1 class="card-title">${flight.flightCode}</h1>
+                                                                                            <p class="card-text">Departure on ${date}</p>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                            
-                                                                                <div class="col-md-3 text-center">
-                                                                                    <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
-                                                                                    <h3>$${(flight.price).toFixed(2)}</h3>
-                                                                                    <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+                                
+                                                                                    <div class="col-md-7 text-center">
+                                                                                        <div class="row">
+                                                                                            <div class="col">
+                                                                                                <h2>${startTime} ${flight.originAirportIata}</h2>
+                                                                                                <p class="card-subtitle">${flight.originAirport}</p>
+                                                                                            </div>
+                                                                                            <div class="col">
+                                                                                                <h2>&#9992</h2>
+                                                                                                ${duration}
+                                                                                            </div>
+                                                                                            <div class="col">
+                                                                                                <h2>${endTime} ${flight.destinationAirportIata}</h2>
+                                                                                                <p class="card-subtitle">${flight.destinationAirport}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                
+                                                                                    <div class="col-md-3 text-center">
+                                                                                        <h2><span class="badge rounded-pill bg-success">Economy</span></h2>
+                                                                                        <h3>$${(flight.price).toFixed(2)}</h3>
+                                                                                        <a href="/flightdetails" class="btn btn-primary" onclick="flightRedirect(${flight.flightid})">View More</a>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        `
-                                                        // Append the flight results
-                                                        $("#search-results").append(searchResultsHTML)
-                                                    })
-                                                }
-                                            })
-
-                                            .catch((error) => {
-                                                console.log(error)
-                                            })
-                                    }
-                                })
-                                document.getElementById("flight-search-results-1").scrollIntoView({ block: "start" })
-                            } else {
-                                alert("No flights found!")
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error.response.data)
-                        })
-                } else {
-                    alert("Please input the required options!")           
+                                                            `
+                                                            // Append the flight results
+                                                            $("#search-results").append(searchResultsHTML)
+                                                        })
+                                                    }
+                                                })
+    
+                                                .catch((error) => {
+                                                    console.log(error)
+                                                })
+                                        }
+                                    })
+                                    document.getElementById("flight-search-results-1").scrollIntoView({ block: "start" })
+                                } else {
+                                    alert("No flights found!")
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error.response.data)
+                            })
+                    } else {
+                        alert("Please input the required options!")           
+                    }
                 }
             })
             

@@ -138,7 +138,7 @@ var promotionDB = {
                 return callback(err, null)
             } else {
                 // SQL command to select promotion by flightid
-                var sql = "select * from sp_air.promotion where flightid = ? and startDate <= (select curdate()) <= endDate"
+                var sql = "select * from sp_air.promotion where flightid = ? and (select curdate()) between promotion.startDate and promotion.endDate"
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, [flightid], (err, result) => {
                     connection.end()

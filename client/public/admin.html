@@ -622,7 +622,14 @@
                 var flightTimeMinutes = $("#flight-time-minutes").val()
                 var embarkDate2 = new Date(embarkDate)
 
-                // Append 0 to single digit minutes
+                // If time inputs are blank
+                if (flightTimeMinutes === "") {
+                    flightTimeMinutes = "0"
+                } if (flightTimeHours === "") {
+                    flightTimeHours = "0"
+                }
+
+                // Append 0 to single digit hours and minutes
                 if (flightTimeMinutes < 10) {
                     flightTimeMinutes = "0" + flightTimeMinutes
                 } if (flightTimeHours < 10) {
@@ -685,6 +692,8 @@
 
                 if (promotionDiscount >= 100) {
                     alert("Promotion cannot be more than 100%! There is no such thing as free flights! >:(")
+                } if (promotionDiscount == 0 || "") {
+                    alert("Promotion cannot be nothing or 0%, might as well not give any discounts LOL :D")
                 } else {
                     // Convert promotion discount into decimal form
                     promotionDiscount /= 100
@@ -778,6 +787,7 @@
                 })
                     .then((response) => {
                         window.location.reload()
+                        window.localStorage.removeItem("cartid")
                     })
 
                     .catch((error) => {

@@ -169,7 +169,7 @@ Database name: sp_air
 - transfers.html
 
 ## Updates to Basic Requirement Fulfillment (Additional Endpoints)
-Added the following additional endpoints to enable maximum functionality of the website:
+Endpoints can be found in the Microsoft Word Documentation found in the GitHub repository.
 
 ## Basic Requirements Fulfillment
 - Persistent login (Storing of JWT Token and User ID on Local Storage)

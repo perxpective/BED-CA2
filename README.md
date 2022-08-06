@@ -172,7 +172,7 @@ Database name: sp_air
 - By default, user table in MySQL should be empty. To create a new account, go the login page by clicking on the profile icon on the top right icon corner of the page.
 - At the bottom of the login inputs, click on "Register here!" to create your new account!
 - After creating a new account, log in to your new account on the login page!
-- Note: To create an admin account, 
+- Note: To create an admin account, email must contain @spair.com
 
 ## Updates to Basic Requirement Fulfillment (Additional Endpoints)
 Endpoints can be found in the Microsoft Word Documentation found in the GitHub repository.

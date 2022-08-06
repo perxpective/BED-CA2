@@ -1009,6 +1009,18 @@ app.delete("/booking/:userid", verifyToken, (req, res) => {
     }
 })
 
+// Endpoint to select all promotions within promotion period
+app.get("/promotions/browse", (req, res) => {
+    promotion.browsePromotions((err, result) => {
+        if (!err) {
+            console.log(result)
+            res.status(200).send(result)
+        } else {
+            res.status(500).send({ "Error Message": "[500] Unknown Error" })
+        }
+    })
+})
+
 /*
 -----------------------------------------------------------------------
 EXPORT APP TO THE SERVER

@@ -1011,6 +1011,7 @@ app.delete("/booking/:userid", verifyToken, (req, res) => {
 
 // Endpoint to select all promotions within promotion period
 app.get("/promotions/browse", (req, res) => {
+    // Function to select promotions where today's date is within the promotional periods
     promotion.browsePromotions((err, result) => {
         if (!err) {
             console.log(result)

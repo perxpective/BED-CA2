@@ -192,7 +192,7 @@ var promotionDB = {
                 return callback(err, null)
             } else {
                 // SQL command to search promotion based on query
-                var sql = `select promotionid, flightid, (select flightCode from flight where flight.flightid = promotion.flightid) as flight, startDate, endDate, discount from promotion where (select flightCode from sp_air.flight where sp_air.flight.flightid = promotion.flightid) like ? and startDate <= (select curdate()) <= endDate;`
+                var sql = `select promotionid, flightid, (select flightCode from flight where flight.flightid = promotion.flightid) as flight, startDate, endDate, discount from promotion where (select flightCode from sp_air.flight where sp_air.flight.flightid = promotion.flightid) like ? and (select curdate()) between promotion.startDate and promotion.endDate`
                 console.log(`RUNNING COMMAND: ${sql}`)
                 connection.query(sql, [query], (err, result) => {
                     connection.end()

@@ -121,6 +121,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- If user is already logged in, redirect to homepage -->
+        <script>
+            const token = window.localStorage.getItem("token")
+            const loggedInUserID = window.localStorage.getItem("loggedInUserID")
+            if (!(token === null || isNaN(loggedInUserID))) {
+                window.location.assign("/")
+            }
+        </script>
         
         <!-- Script to disable form submissions if there are empty fields -->
         <script>

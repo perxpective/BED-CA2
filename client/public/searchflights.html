@@ -211,25 +211,26 @@
                 const returnDate = $("#return-date").val()
                 const minPrice = $("#minimum-price").val()
                 const maxPrice = $("#maximum-price").val()
-
+                
+                const embarkDate2 = new Date(embarkDate)
+                const returnDate2 = new Date(returnDate)
                 var check = null
 
                 // Validate airport and date option inputs
                 if (originAirport === destinationAirport && originAirport !== '' && destinationAirport !== '') {
-                    console.log("statement 1 activated")
                     check = false
                     alert("Origin and Destination cannot be the same place!")
 
                 } else if (minPrice > maxPrice && minPrice !== '' && maxPrice !== '') {
-                    console.log("statement 2 activated")
                     check = false
                     alert("Minimum Price cannot be more than maximum price!")
                 } else if (minPrice < 0 || maxPrice < 0) {
-                    console.log("statement 3 activated")
                     check = false
                     alert("Prices cannot be less than 0!")
+                } else if (embarkDate2 > returnDate2) {
+                    check = false
+                    alert("Embark date cannot be after return date!")
                 } else {
-                    console.log("statement 4 activated")
                     check = true
                 }
 
